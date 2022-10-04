@@ -26,7 +26,6 @@ void AFPCharacter::Tick(float DeltaTime)
 	
 }
 
-// Called to bind functionality to input
 void AFPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

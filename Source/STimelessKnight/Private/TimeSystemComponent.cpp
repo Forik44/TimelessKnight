@@ -87,7 +87,6 @@ void UTimeSystemComponent::Push()
 {
 	FTransform CurrentTransform;
 	CurrentTransform = GetOwner()->GetActorTransform();
-
 	FTransform* TransformData = TransformBuffer->GetData();
 
 	FVector LinearVelocity = Cast<UStaticMeshComponent>(GetOwner()->GetComponentByClass(UStaticMeshComponent::StaticClass()))->

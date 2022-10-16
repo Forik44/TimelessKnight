@@ -30,6 +30,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	float MaxWalkSpeed;
 
+	UPROPERTY(EditAnywhere)
 	UTimeSystemCharacterComponent* TimeSystemCharacter;
 
 };

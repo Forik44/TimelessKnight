@@ -5,6 +5,9 @@
 #include "Components/InputComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Public/InteractiveItem.h"
+#include "Public/DefaultEnemyCharacter.h"
+#include "Public/TimeSystemCharacterComponent.h"
 #include "FPCharacter.generated.h"
 
 UCLASS()
@@ -34,6 +37,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Camera")
 	UCameraComponent* Camera;
 
+	UPROPERTY(EditAnywhere, Category = "TimeSystem")
+	UTimeSystemCharacterComponent* TimeSystemCharacter;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	FVector CrouchEyeOffset;
 
@@ -41,6 +47,10 @@ public:
 	float CrouchSpeed;
 
 private:
+
+	AInteractiveItem* CatchedObject;
+	ADefaultEnemyCharacter* CatchedEnemy;
+
 	void HoriMove(float value);
 	void VertMove(float value);
 
@@ -53,8 +63,10 @@ private:
 	void StartCrouch();
 	void StopCrouch();
 	
-	void RewindTimeYour();
-	void RewindTimeObject();
+	void RewindTimeYourStart();
+	void RewindTimeYourStop();
+	void RewindTimeObjectStart();
+	void RewindTimeObjectStop();
 	void RewindTimeEverything();
 
 	APawn* GetPlayerPawn() const;

@@ -1,6 +1,7 @@
 #include "FPCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "STimelessKnightGameModeBase.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AFPCharacter::AFPCharacter()
 {
@@ -16,6 +17,8 @@ AFPCharacter::AFPCharacter()
 
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
+
+	TimeSystemCharacter = CreateDefaultSubobject<UTimeSystemCharacterComponent>(TEXT("TimeSystemCharacter"));
 }
 
 void AFPCharacter::OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
@@ -82,9 +85,13 @@ void AFPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AFPCharacter::StartCrouch);
 	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AFPCharacter::StopCrouch);
 
-	PlayerInputComponent->BindAction("RewindTimeYour", IE_Pressed, this, &AFPCharacter::RewindTimeYour);
-	PlayerInputComponent->BindAction("RewindTimeObject", IE_Pressed, this, &AFPCharacter::RewindTimeObject);
+	PlayerInputComponent->BindAction("RewindTimeYour", IE_Pressed, this, &AFPCharacter::RewindTimeYourStart);
+	PlayerInputComponent->BindAction("RewindTimeObject", IE_Pressed, this, &AFPCharacter::RewindTimeObjectStart);
 	PlayerInputComponent->BindAction("RewindTimeEverything", IE_Pressed, this, &AFPCharacter::RewindTimeEverything);
+
+	PlayerInputComponent->BindAction("RewindTimeYour", IE_Released, this, &AFPCharacter::RewindTimeYourStop);
+	PlayerInputComponent->BindAction("RewindTimeObject", IE_Released, this, &AFPCharacter::RewindTimeObjectStop);
+	PlayerInputComponent->BindAction("RewindTimeEverything", IE_Released, this, &AFPCharacter::RewindTimeEverything);
 }
 
 void AFPCharacter::HoriMove(float value)
@@ -159,14 +166,66 @@ void AFPCharacter::StopCrouch()
 	UnCrouch();
 }
 
-void AFPCharacter::RewindTimeYour()
+void AFPCharacter::RewindTimeYourStart()
 {
 	UE_LOG(LogTemp, Log, TEXT("rewind time on your own"));
+	Camera->PostProcessSettings.VignetteIntensity = 1;
+	Camera->PostProcessSettings.bOverride_VignetteIntensity = true;
+	Camera->PostProcessSettings.GrainIntensity = 0.8;
+	Camera->PostProcessSettings.bOverride_GrainIntensity = true;
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->InputComponent->Deactivate();
+	TimeSystemCharacter->StartRevers();
 }
 
-void AFPCharacter::RewindTimeObject()
+void AFPCharacter::RewindTimeYourStop()
 {
-	UE_LOG(LogTemp, Log, TEXT("rewind time on an object"));
+	UE_LOG(LogTemp, Log, TEXT("rewind time on your own"));
+	Camera->PostProcessSettings.VignetteIntensity = 0;
+	Camera->PostProcessSettings.bOverride_VignetteIntensity = false;
+	Camera->PostProcessSettings.GrainIntensity = 0;
+	Camera->PostProcessSettings.bOverride_GrainIntensity = false;
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->InputComponent->Activate();
+	TimeSystemCharacter->StopRevers();
+}
+
+void AFPCharacter::RewindTimeObjectStart()
+{
+	UE_LOG(LogTemp, Log, TEXT("rewind time on an object start"));
+	FHitResult* Hit = new FHitResult();
+	FVector Start = Camera->GetComponentLocation() + UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 50;
+	FVector End = UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 1000 + Start;
+
+	GetWorld()->LineTraceSingleByChannel(*Hit, Start, End, ECC_Visibility);
+	CatchedObject = Cast<AInteractiveItem>(Hit->Actor);
+	if (CatchedObject)
+	{
+		CatchedObject->TimeSystem->StartRevers();
+	}
+	else
+	{
+		GetWorld()->LineTraceSingleByChannel(*Hit, Start, End, ECC_Pawn);
+		CatchedEnemy = Cast<ADefaultEnemyCharacter>(Hit->Actor);
+		if (CatchedEnemy)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Ob"));
+			CatchedEnemy->TimeSystemCharacter->StartRevers();
+		}
+	}
+}
+
+void AFPCharacter::RewindTimeObjectStop()
+{
+	UE_LOG(LogTemp, Log, TEXT("rewind time on an object stoped"));
+	if (CatchedObject)
+	{
+		CatchedObject->TimeSystem->StopRevers();
+		CatchedObject = nullptr;
+	}
+	if (CatchedEnemy)
+	{
+		CatchedEnemy->TimeSystemCharacter->StopRevers();
+		CatchedEnemy = nullptr;
+	}
 }
 
 void AFPCharacter::RewindTimeEverything()

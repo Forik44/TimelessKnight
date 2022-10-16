@@ -173,7 +173,7 @@ void AFPCharacter::RewindTimeYourStart()
 	Camera->PostProcessSettings.bOverride_VignetteIntensity = true;
 	Camera->PostProcessSettings.GrainIntensity = 0.8;
 	Camera->PostProcessSettings.bOverride_GrainIntensity = true;
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->InputComponent->Deactivate();
+	
 	TimeSystemCharacter->StartRevers();
 }
 
@@ -184,7 +184,7 @@ void AFPCharacter::RewindTimeYourStop()
 	Camera->PostProcessSettings.bOverride_VignetteIntensity = false;
 	Camera->PostProcessSettings.GrainIntensity = 0;
 	Camera->PostProcessSettings.bOverride_GrainIntensity = false;
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->InputComponent->Activate();
+	
 	TimeSystemCharacter->StopRevers();
 }
 

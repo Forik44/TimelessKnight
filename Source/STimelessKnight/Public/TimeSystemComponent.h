@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "CircleBuffer.h"
+#include "Math/Vector.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimeSystemComponent.generated.h"
 
@@ -50,6 +52,8 @@ private:
 	bool IsReverse;
 	int CurrentPosition;
 	int ActiveElem;
+	//CircleBuffer* TransformBuffer;
+	//CircleBuffer<FVector>* PhisicsBuffer;
 	
 	TArray<FTransform>* TransformBuffer;
 	TArray<FTransform>* PhysicsBuffer;

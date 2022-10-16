@@ -15,6 +15,10 @@ class STIMELESSKNIGHT_API AFPCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AFPCharacter();
+	
+	void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+	void OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+	void CalcCamera(float Deltatime, struct FMinimalVievInfo& OutResult) override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,7 +32,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	UCameraComponent* Camera;
+		UCameraComponent* Camera;
 
 private:
 	void HoriMove(float value);
@@ -36,4 +40,23 @@ private:
 
 	void HoriRot(float value);
 	void VertRot(float value);
+
+	void StartRun();
+	void StopRun();
+
+	void StartCrouch();
+	void StopCrouch();
+	
+	void RewindTimeYour();
+	void RewindTimeObject();
+	void RewindTimeEverything();
+
+	APawn* GetPlayerPawn() const;
+	UCharacterMovementComponent* GetCharacterMovementComponent() const;
+	bool IsVertMove;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
+		FVector CrouchEyeOffset;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
+		float CrouchSpeed;
 };

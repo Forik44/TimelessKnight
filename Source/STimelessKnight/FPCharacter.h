@@ -18,7 +18,7 @@ public:
 	
 	void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
 	void OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
-	void CalcCamera(float Deltatime, struct FMinimalVievInfo& OutResult) override;
+	void CalcCamera(float Deltatime, struct FMinimalViewInfo& OutResult) override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -32,7 +32,13 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere, Category = "Camera")
-		UCameraComponent* Camera;
+	UCameraComponent* Camera;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
+	FVector CrouchEyeOffset;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
+	float CrouchSpeed;
 
 private:
 	void HoriMove(float value);
@@ -55,8 +61,4 @@ private:
 	UCharacterMovementComponent* GetCharacterMovementComponent() const;
 	bool IsVertMove;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
-		FVector CrouchEyeOffset;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
-		float CrouchSpeed;
 };

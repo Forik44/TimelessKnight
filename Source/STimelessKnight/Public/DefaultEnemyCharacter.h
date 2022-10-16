@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "TimeSystemCharacterComponent.h"
 #include "DefaultEnemyCharacter.generated.h"
 
 UCLASS()
@@ -29,5 +30,6 @@ public:
 	UPROPERTY(EditAnywhere)
 	float MaxWalkSpeed;
 
+	UTimeSystemCharacterComponent* TimeSystemCharacter;
 
 };

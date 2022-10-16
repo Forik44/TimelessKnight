@@ -29,6 +29,7 @@ void AFPCharacter::OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightA
 	CrouchEyeOffset.Z += StartBaseEyeHight - BaseEyeHeight + HalfHeightAdjust;
 	Camera->SetRelativeLocation(FVector(0, 0, BaseEyeHeight), false);
 }
+
 void AFPCharacter::OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
 {
 	if (HalfHeightAdjust == 0.f) 
@@ -40,7 +41,8 @@ void AFPCharacter::OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdj
 	CrouchEyeOffset.Z += StartBaseEyeHight - BaseEyeHeight - HalfHeightAdjust;
 	Camera->SetRelativeLocation(FVector(0, 0, BaseEyeHeight), false);
 }
-void AFPCharacter::CalcCamera(float Deltatime, struct FMinimalVievInfo& OutResult)
+
+void AFPCharacter::CalcCamera(float Deltatime, struct FMinimalViewInfo& OutResult)
 {
 	if (Camera)
 	{
@@ -52,7 +54,7 @@ void AFPCharacter::CalcCamera(float Deltatime, struct FMinimalVievInfo& OutResul
 void AFPCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	GetCharacterMovementComponent()->MaxWalkSpeed = 170.0f;
+	GetCharacterMovementComponent()->MaxWalkSpeed = 300.0f;
 }
 
 void AFPCharacter::Tick(float DeltaTime)
@@ -123,33 +125,35 @@ void AFPCharacter::VertRot(float value)
 	}
 }
 
-
-
 APawn* AFPCharacter::GetPlayerPawn() const
 {
 	APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	if (!PlayerPawn) return nullptr;
 	return PlayerPawn;
 }
+
 UCharacterMovementComponent* AFPCharacter::GetCharacterMovementComponent() const
 {
 	UCharacterMovementComponent* CharacterMovementComponent = Cast <UCharacterMovementComponent>(GetPlayerPawn()->GetMovementComponent());
 	if (!CharacterMovementComponent) return nullptr;
 	return CharacterMovementComponent;
 }
+
 void AFPCharacter::StartRun()
 {
-	if (IsVertMove) GetCharacterMovementComponent()->MaxWalkSpeed = 300.0f;
+	if (IsVertMove) GetCharacterMovementComponent()->MaxWalkSpeed = 450.0f;
 }
+
 void AFPCharacter::StopRun()
 {
-	GetCharacterMovementComponent()->MaxWalkSpeed = 170.0f;
+	GetCharacterMovementComponent()->MaxWalkSpeed = 300.0f;
 }
 
 void AFPCharacter::StartCrouch()
 {
 	Crouch();
 }
+
 void AFPCharacter::StopCrouch()
 {
 	UnCrouch();
@@ -157,13 +161,15 @@ void AFPCharacter::StopCrouch()
 
 void AFPCharacter::RewindTimeYour()
 {
-	UE_LOG(LogTemp, TEXT("rewind time on your own"));
+	UE_LOG(LogTemp, Log, TEXT("rewind time on your own"));
 }
+
 void AFPCharacter::RewindTimeObject()
 {
-	UE_LOG(LogTemp, TEXT("rewind time on an object"));
+	UE_LOG(LogTemp, Log, TEXT("rewind time on an object"));
 }
+
 void AFPCharacter::RewindTimeEverything()
 {
-	UE_LOG(LogTemp, TEXT("rewind time for everything"));
+	UE_LOG(LogTemp, Log, TEXT("rewind time for everything"));
 }

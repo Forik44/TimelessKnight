@@ -52,9 +52,12 @@ private:
 	bool IsReverse;
 	int CurrentPosition;
 	int ActiveElem;
+
 	//CircleBuffer* TransformBuffer;
 	//CircleBuffer<FVector>* PhisicsBuffer;
 	
 	TArray<FTransform>* TransformBuffer;
 	TArray<FTransform>* PhysicsBuffer;
+
+	FTransform CurrentActorTransform;
 };

@@ -148,7 +148,7 @@ UCharacterMovementComponent* AFPCharacter::GetCharacterMovementComponent() const
 
 void AFPCharacter::StartRun()
 {
-	if (IsVertMove) GetCharacterMovementComponent()->MaxWalkSpeed = 450.0f;
+	if (IsVertMove) GetCharacterMovementComponent()->MaxWalkSpeed = 550.0f;
 }
 
 void AFPCharacter::StopRun()

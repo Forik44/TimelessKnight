@@ -13,6 +13,8 @@ MaxWalkSpeed(250)
 	PrimaryActorTick.bCanEverTick = true;
 	AIControllerClass = ADefaultAIController::StaticClass();
 	TimeSystemCharacter = CreateDefaultSubobject<UTimeSystemCharacterComponent>(TEXT("TimeSystemCharacter"));
+
+	DefaultSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DefaultSound"));
 }
 
 // Called when the game starts or when spawned
@@ -21,6 +23,8 @@ void ADefaultEnemyCharacter::BeginPlay()
 	Super::BeginPlay();
 	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 	
+	/*DefaultSound->Stop();*/
+	DefaultSound->Play();
 }
 
 // Called every frame

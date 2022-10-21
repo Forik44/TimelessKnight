@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DefaultEnemyCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "SlowEnemyCharacter.generated.h"
 
 /**
@@ -14,4 +15,5 @@ class STIMELESSKNIGHT_API ASlowEnemyCharacter : public ADefaultEnemyCharacter
 {
 	GENERATED_BODY()
 	
+	virtual void BeginPlay() override;
 };

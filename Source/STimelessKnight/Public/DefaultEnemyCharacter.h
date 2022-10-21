@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "TimeSystemCharacterComponent.h"
+#include "Components/AudioComponent.h"
 #include "DefaultEnemyCharacter.generated.h"
 
 UCLASS()
@@ -32,5 +33,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UTimeSystemCharacterComponent* TimeSystemCharacter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAudioComponent* DefaultSound;
+
 
 };

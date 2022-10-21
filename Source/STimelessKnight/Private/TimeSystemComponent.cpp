@@ -35,10 +35,8 @@ void UTimeSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 	if (CurrentActorTransform.IsValid())
 	{
-		UE_LOG(LogTemp, Log, TEXT("1 if"));
 		if (CurrentActorTransform.GetLocation() != GetOwner()->GetActorTransform().GetLocation() || CurrentActorTransform.GetRotation() != GetOwner()->GetActorTransform().GetRotation() || IsReverse)
 		{
-			UE_LOG(LogTemp, Log, TEXT("2 if"));
 			CurrentActorTransform = GetOwner()->GetActorTransform();
 			if (IsReverse)
 			{

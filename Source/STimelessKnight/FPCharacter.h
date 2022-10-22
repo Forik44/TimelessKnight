@@ -10,6 +10,8 @@
 #include "Public/TimeSystemCharacterComponent.h"
 #include "FPCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChangedEvent, int, CurrentValue);
+
 UCLASS()
 class STIMELESSKNIGHT_API AFPCharacter : public ACharacter
 {
@@ -34,17 +36,38 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(BlueprintAssignable)
+		FManaChangedEvent OnManaChanged;
+
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	UCameraComponent* Camera;
+		UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere, Category = "TimeSystem")
-	UTimeSystemCharacterComponent* TimeSystemCharacter;
+		UTimeSystemCharacterComponent* TimeSystemCharacter;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
-	FVector CrouchEyeOffset;
+		FVector CrouchEyeOffset;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
-	float CrouchSpeed;
+		float CrouchSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int MaxXP, MaxMana, ManaRegenerationRate;
+
+	UFUNCTION(BlueprintCallable)
+		void ChangeXP(int value);
+
+	UFUNCTION(BlueprintCallable)
+		void ChangeMana(int value);
+
+	UFUNCTION(BlueprintCallable)
+		int GetXP();
+
+	UFUNCTION(BlueprintCallable)
+		int GetMana();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int ManaRTYour, ManaRTObject, ManaRTEverything;
 
 private:
 
@@ -67,10 +90,14 @@ private:
 	void RewindTimeYourStop();
 	void RewindTimeObjectStart();
 	void RewindTimeObjectStop();
-	void RewindTimeEverything();
+	void RewindTimeEverythingStart();
+	void RewindTimeEverythingStop();
 
 	APawn* GetPlayerPawn() const;
 	UCharacterMovementComponent* GetCharacterMovementComponent() const;
 	bool IsVertMove;
 
+	FTimerHandle ManaTimer;
+
+	int CurrentXP, CurrentMana;
 };

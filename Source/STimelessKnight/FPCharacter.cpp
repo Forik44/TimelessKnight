@@ -19,11 +19,18 @@ AFPCharacter::AFPCharacter()
 	CrouchSpeed = 12.f;
 
 	TimeSystemCharacter = CreateDefaultSubobject<UTimeSystemCharacterComponent>(TEXT("TimeSystemCharacter"));
+
+	MaxXP = 100;
+	MaxMana = 100;
+	ManaRTYour = 2;
+	ManaRTObject = 3;
+	ManaRTEverything = 10;
+	ManaRegenerationRate = 1;
 }
 
 void AFPCharacter::OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
 {
-	if (HalfHeightAdjust == 0.f) 
+	if (HalfHeightAdjust == 0.f)
 	{
 		return;
 	}
@@ -35,7 +42,7 @@ void AFPCharacter::OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightA
 
 void AFPCharacter::OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
 {
-	if (HalfHeightAdjust == 0.f) 
+	if (HalfHeightAdjust == 0.f)
 	{
 		return;
 	}
@@ -58,6 +65,10 @@ void AFPCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	GetCharacterMovementComponent()->MaxWalkSpeed = 300.0f;
+	CurrentXP = MaxXP;
+	CurrentMana = MaxMana;
+	GetWorld()->GetTimerManager().SetTimer(ManaRegenerationTimer, this, &AFPCharacter::ManaRegeneration, 3.0f, true);
+
 }
 
 void AFPCharacter::Tick(float DeltaTime)
@@ -87,11 +98,94 @@ void AFPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAction("RewindTimeYour", IE_Pressed, this, &AFPCharacter::RewindTimeYourStart);
 	PlayerInputComponent->BindAction("RewindTimeObject", IE_Pressed, this, &AFPCharacter::RewindTimeObjectStart);
-	PlayerInputComponent->BindAction("RewindTimeEverything", IE_Pressed, this, &AFPCharacter::RewindTimeEverything);
+	PlayerInputComponent->BindAction("RewindTimeEverything", IE_Pressed, this, &AFPCharacter::RewindTimeEverythingStart);
 
 	PlayerInputComponent->BindAction("RewindTimeYour", IE_Released, this, &AFPCharacter::RewindTimeYourStop);
 	PlayerInputComponent->BindAction("RewindTimeObject", IE_Released, this, &AFPCharacter::RewindTimeObjectStop);
-	PlayerInputComponent->BindAction("RewindTimeEverything", IE_Released, this, &AFPCharacter::RewindTimeEverything);
+	PlayerInputComponent->BindAction("RewindTimeEverything", IE_Released, this, &AFPCharacter::RewindTimeEverythingStop);
+}
+
+void AFPCharacter::ChangeXP(int value)
+{
+
+}
+
+void AFPCharacter::ChangeMana(int value)
+{
+	if ((value <= MaxMana) && (value >= 0)) CurrentMana = value;
+	OnManaChanged.Broadcast(CurrentMana);
+}
+
+void AFPCharacter::ManaRegeneration()
+{
+	if (CurrentMana < MaxMana)
+	{
+		ChangeMana(CurrentMana + ManaRegenerationRate);
+	}
+}
+
+void AFPCharacter::ChangeManaRTYour()
+{
+	if (CurrentMana >= ManaRTYour) {
+		ChangeMana(CurrentMana - ManaRTYour);
+		TimeSystemCharacter->StartRevers();
+	}
+	else
+	{
+		TimeSystemCharacter->StopRevers();
+		GetWorld()->GetTimerManager().ClearTimer(ManaRTYourTimer);
+		RewindTimeYourStop();
+	}
+}
+
+void AFPCharacter::ChangeManaRTObject()
+{
+	if (CurrentMana >= ManaRTObject) {
+		ChangeMana(CurrentMana - ManaRTObject);
+		if (CatchedObject)
+		{
+			CatchedObject->TimeSystem->StartRevers();
+		}
+		if (CatchedEnemy)
+		{
+			CatchedEnemy->TimeSystemCharacter->StartRevers();
+		}
+	}
+	else
+	{
+		if (CatchedObject)
+		{
+			CatchedObject->TimeSystem->StopRevers();
+		}
+		if (CatchedEnemy)
+		{
+			CatchedEnemy->TimeSystemCharacter->StopRevers();
+		}
+		RewindTimeObjectStop();
+	}
+}
+
+void AFPCharacter::ChangeManaRTEverything()
+{
+	if (CurrentMana >= ManaRTEverything) {
+		ChangeMana(CurrentMana - ManaRTEverything);
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(ManaRTEverythingTimer);
+		RewindTimeEverythingStop();
+	}
+}
+
+
+int AFPCharacter::GetXP()
+{
+	return CurrentXP;
+}
+
+int AFPCharacter::GetMana()
+{
+	return CurrentMana;
 }
 
 void AFPCharacter::HoriMove(float value)
@@ -168,24 +262,23 @@ void AFPCharacter::StopCrouch()
 
 void AFPCharacter::RewindTimeYourStart()
 {
+	GetWorld()->GetTimerManager().SetTimer(ManaRTYourTimer, this, &AFPCharacter::ChangeManaRTYour, 1.0f, true, 0);
 	UE_LOG(LogTemp, Log, TEXT("rewind time on your own"));
 	Camera->PostProcessSettings.VignetteIntensity = 1;
 	Camera->PostProcessSettings.bOverride_VignetteIntensity = true;
 	Camera->PostProcessSettings.GrainIntensity = 0.8;
 	Camera->PostProcessSettings.bOverride_GrainIntensity = true;
-	
-	TimeSystemCharacter->StartRevers();
 }
 
 void AFPCharacter::RewindTimeYourStop()
 {
 	UE_LOG(LogTemp, Log, TEXT("rewind time on your own"));
+	TimeSystemCharacter->StopRevers();
 	Camera->PostProcessSettings.VignetteIntensity = 0;
 	Camera->PostProcessSettings.bOverride_VignetteIntensity = false;
 	Camera->PostProcessSettings.GrainIntensity = 0;
 	Camera->PostProcessSettings.bOverride_GrainIntensity = false;
-	
-	TimeSystemCharacter->StopRevers();
+	GetWorld()->GetTimerManager().ClearTimer(ManaRTYourTimer);
 }
 
 void AFPCharacter::RewindTimeObjectStart()
@@ -199,7 +292,7 @@ void AFPCharacter::RewindTimeObjectStart()
 	CatchedObject = Cast<AInteractiveItem>(Hit->Actor);
 	if (CatchedObject)
 	{
-		CatchedObject->TimeSystem->StartRevers();
+		GetWorld()->GetTimerManager().SetTimer(ManaRTObjectTimer, this, &AFPCharacter::ChangeManaRTObject, 1.0f, true, 0);
 	}
 	else
 	{
@@ -208,14 +301,14 @@ void AFPCharacter::RewindTimeObjectStart()
 		if (CatchedEnemy)
 		{
 			UE_LOG(LogTemp, Log, TEXT("Ob"));
-			CatchedEnemy->TimeSystemCharacter->StartRevers();
+			GetWorld()->GetTimerManager().SetTimer(ManaRTObjectTimer, this, &AFPCharacter::ChangeManaRTObject, 1.0f, true, 0);
 		}
 	}
 }
-
 void AFPCharacter::RewindTimeObjectStop()
 {
 	UE_LOG(LogTemp, Log, TEXT("rewind time on an object stoped"));
+	GetWorld()->GetTimerManager().ClearTimer(ManaRTObjectTimer);
 	if (CatchedObject)
 	{
 		CatchedObject->TimeSystem->StopRevers();
@@ -228,7 +321,15 @@ void AFPCharacter::RewindTimeObjectStop()
 	}
 }
 
-void AFPCharacter::RewindTimeEverything()
+void AFPCharacter::RewindTimeEverythingStart()
 {
-	UE_LOG(LogTemp, Log, TEXT("rewind time for everything"));
+	if (CurrentMana >= ManaRTEverything)
+	{
+		GetWorld()->GetTimerManager().SetTimer(ManaRTEverythingTimer, this, &AFPCharacter::ChangeManaRTEverything, 1.0f, true, 0);
+		UE_LOG(LogTemp, Log, TEXT("rewind time for everything"));
+	}
+}
+void AFPCharacter::RewindTimeEverythingStop()
+{
+
 }

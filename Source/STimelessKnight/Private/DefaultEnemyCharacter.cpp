@@ -23,8 +23,8 @@ void ADefaultEnemyCharacter::BeginPlay()
 	Super::BeginPlay();
 	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 	
-	/*DefaultSound->Stop();*/
-	DefaultSound->Play();
+	DefaultSound->Stop();
+	/*DefaultSound->Play();*/
 }
 
 // Called every frame

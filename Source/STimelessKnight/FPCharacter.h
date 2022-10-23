@@ -37,38 +37,58 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(BlueprintAssignable)
-		FManaChangedEvent OnManaChanged;
+	FManaChangedEvent OnManaChanged;
 
-	UPROPERTY(EditAnywhere, Category = "Camera")
-		UCameraComponent* Camera;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere, Category = "TimeSystem")
-		UTimeSystemCharacterComponent* TimeSystemCharacter;
+	UTimeSystemCharacterComponent* TimeSystemCharacter;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
-		FVector CrouchEyeOffset;
+	FVector CrouchEyeOffset;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
-		float CrouchSpeed;
+	float CrouchSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int MaxXP, MaxMana, ManaRegenerationRate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int MaxXP;
 
-	UFUNCTION(BlueprintCallable)
-		void ChangeXP(int value);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int MaxMana;
 
-	UFUNCTION(BlueprintCallable)
-		void ChangeMana(int value);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int ManaRegenerationRate;
 
-	UFUNCTION(BlueprintCallable)
-		int GetXP();
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	void ChangeXP(int value);
 
-	UFUNCTION(BlueprintCallable)
-		int GetMana();
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	void ChangeMana(int value);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int ManaRTYour, ManaRTObject, ManaRTEverything;
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	int GetXP();
 
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	int GetMana();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int ManaRTEverything;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int ManaRTObject;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int ManaRTEnemy;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int ManaRTYour;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	float SpeedStep;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	float SpeedRun;
 private:
 
 	AInteractiveItem* CatchedObject;
@@ -98,6 +118,16 @@ private:
 	bool IsVertMove;
 
 	FTimerHandle ManaTimer;
+	FTimerHandle ManaRegenerationTimer;
+	FTimerHandle ManaRTYourTimer;
+	FTimerHandle ManaRTObjectTimer;
+	FTimerHandle ManaRTEverythingTimer;
 
 	int CurrentXP, CurrentMana;
+
+	void ChangeManaRTEverything();
+	void ChangeManaRTObject();
+	void ChangeManaRTYour();
+	void ManaRegeneration();
+
 };

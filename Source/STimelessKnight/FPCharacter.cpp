@@ -4,6 +4,16 @@
 #include "Kismet/KismetMathLibrary.h"
 
 AFPCharacter::AFPCharacter()
+	:
+MaxXP(100),
+MaxMana(100),
+ManaRTYour(2),
+ManaRTObject(3),
+ManaRTEnemy(4),
+ManaRTEverything(10),
+ManaRegenerationRate(1),
+SpeedStep(200),
+SpeedRun(350)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -20,12 +30,7 @@ AFPCharacter::AFPCharacter()
 
 	TimeSystemCharacter = CreateDefaultSubobject<UTimeSystemCharacterComponent>(TEXT("TimeSystemCharacter"));
 
-	MaxXP = 100;
-	MaxMana = 100;
-	ManaRTYour = 2;
-	ManaRTObject = 3;
-	ManaRTEverything = 10;
-	ManaRegenerationRate = 1;
+
 }
 
 void AFPCharacter::OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
@@ -64,7 +69,7 @@ void AFPCharacter::CalcCamera(float Deltatime, struct FMinimalViewInfo& OutResul
 void AFPCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	GetCharacterMovementComponent()->MaxWalkSpeed = 300.0f;
+	GetCharacterMovementComponent()->MaxWalkSpeed = SpeedStep;
 	CurrentXP = MaxXP;
 	CurrentMana = MaxMana;
 	GetWorld()->GetTimerManager().SetTimer(ManaRegenerationTimer, this, &AFPCharacter::ManaRegeneration, 3.0f, true);
@@ -141,13 +146,14 @@ void AFPCharacter::ChangeManaRTYour()
 void AFPCharacter::ChangeManaRTObject()
 {
 	if (CurrentMana >= ManaRTObject) {
-		ChangeMana(CurrentMana - ManaRTObject);
 		if (CatchedObject)
 		{
+			ChangeMana(CurrentMana - ManaRTObject);
 			CatchedObject->TimeSystem->StartRevers();
 		}
 		if (CatchedEnemy)
 		{
+			ChangeMana(CurrentMana - ManaRTEnemy);
 			CatchedEnemy->TimeSystemCharacter->StartRevers();
 		}
 	}
@@ -242,12 +248,12 @@ UCharacterMovementComponent* AFPCharacter::GetCharacterMovementComponent() const
 
 void AFPCharacter::StartRun()
 {
-	if (IsVertMove) GetCharacterMovementComponent()->MaxWalkSpeed = 550.0f;
+	if (IsVertMove) GetCharacterMovementComponent()->MaxWalkSpeed = SpeedRun;
 }
 
 void AFPCharacter::StopRun()
 {
-	GetCharacterMovementComponent()->MaxWalkSpeed = 300.0f;
+	GetCharacterMovementComponent()->MaxWalkSpeed = SpeedStep;
 }
 
 void AFPCharacter::StartCrouch()

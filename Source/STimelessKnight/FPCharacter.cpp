@@ -194,6 +194,18 @@ int AFPCharacter::GetMana()
 	return CurrentMana;
 }
 
+void AFPCharacter::ChangeManaRTOtherObject(FTimerHandle Timer, int ManaRTOtherObject)
+{
+	if (CurrentMana >= ManaRTOtherObject) {
+		ChangeMana(CurrentMana - ManaRTOtherObject);
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(Timer);
+		RewindTimeObjectStop();
+	}
+}
+
 void AFPCharacter::HoriMove(float value)
 {
 	if (value)
@@ -290,11 +302,13 @@ void AFPCharacter::RewindTimeYourStop()
 void AFPCharacter::RewindTimeObjectStart()
 {
 	UE_LOG(LogTemp, Log, TEXT("rewind time on an object start"));
+	OnReversObjectPressed.Broadcast();
+
 	FHitResult* Hit = new FHitResult();
 	FVector Start = Camera->GetComponentLocation() + UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 50;
 	FVector End = UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 1000 + Start;
-
 	GetWorld()->LineTraceSingleByChannel(*Hit, Start, End, ECC_Visibility);
+
 	CatchedObject = Cast<AInteractiveItem>(Hit->Actor);
 	if (CatchedObject)
 	{
@@ -314,6 +328,7 @@ void AFPCharacter::RewindTimeObjectStart()
 void AFPCharacter::RewindTimeObjectStop()
 {
 	UE_LOG(LogTemp, Log, TEXT("rewind time on an object stoped"));
+	OnReversObjectReleased.Broadcast();
 	GetWorld()->GetTimerManager().ClearTimer(ManaRTObjectTimer);
 	if (CatchedObject)
 	{

@@ -12,6 +12,10 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChangedEvent, int, CurrentValue);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversObjectPressed);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversObjectReleased);
+
 UCLASS()
 class STIMELESSKNIGHT_API AFPCharacter : public ACharacter
 {
@@ -38,6 +42,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FManaChangedEvent OnManaChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FReversObjectPressed OnReversObjectPressed;
+
+	UPROPERTY(BlueprintAssignable)
+	FReversObjectReleased OnReversObjectReleased;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* Camera;
@@ -71,6 +81,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	int GetMana();
+
+	UFUNCTION(BlueprintCallable, Category = "Revers")
+	void ChangeManaRTOtherObject(FTimerHandle Timer, int ManaRTOtherObject);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	int ManaRTEverything;

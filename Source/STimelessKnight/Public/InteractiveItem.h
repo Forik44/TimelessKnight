@@ -8,6 +8,7 @@
 #include "TimeSystemComponent.h"
 #include "InteractiveItem.generated.h"
 
+
 UCLASS()
 class STIMELESSKNIGHT_API AInteractiveItem : public AActor
 {

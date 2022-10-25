@@ -37,5 +37,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAudioComponent* DefaultSound;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AttackLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AttackDamage;
+
+	UFUNCTION(BlueprintCallable)
+	void LaunchAttack();
+
+
 
 };

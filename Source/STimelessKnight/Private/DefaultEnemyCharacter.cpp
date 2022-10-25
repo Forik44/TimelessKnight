@@ -4,6 +4,8 @@
 #include "DefaultEnemyCharacter.h"
 #include "DefaultAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 ADefaultEnemyCharacter::ADefaultEnemyCharacter()
 	:
@@ -15,6 +17,7 @@ MaxWalkSpeed(250)
 	TimeSystemCharacter = CreateDefaultSubobject<UTimeSystemCharacterComponent>(TEXT("TimeSystemCharacter"));
 
 	DefaultSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DefaultSound"));
+	DefaultSound->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned
@@ -39,5 +42,19 @@ void ADefaultEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ADefaultEnemyCharacter::LaunchAttack()
+{
+	UE_LOG(LogTemp, Log, TEXT("Attack"));
+	FHitResult* Hit = new FHitResult();
+	FVector Start = GetActorLocation();
+	FVector End = UKismetMathLibrary::GetForwardVector(GetRootComponent()->GetComponentRotation()) * AttackLength + Start;
+	bool Success = GetWorld()->LineTraceSingleByChannel(*Hit, Start, End, ECC_Visibility);
+	if (Success)
+	{
+		AActor* ActorHited = Cast<AActor>(Hit->Actor);
+		UGameplayStatics::ApplyDamage(ActorHited, AttackDamage, GetController(), this, UDamageType::StaticClass());
+	}
 }
 

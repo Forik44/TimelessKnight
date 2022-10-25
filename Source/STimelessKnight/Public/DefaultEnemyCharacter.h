@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "TimeSystemCharacterComponent.h"
 #include "Components/AudioComponent.h"
+#include "Engine/TargetPoint.h"
 #include "DefaultEnemyCharacter.generated.h"
 
 UCLASS()
@@ -30,6 +31,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float MaxWalkSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<ATargetPoint*> TargetPoints;
 
 	UPROPERTY(EditAnywhere)
 	UTimeSystemCharacterComponent* TimeSystemCharacter;

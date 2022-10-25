@@ -18,6 +18,9 @@ MaxWalkSpeed(250)
 
 	DefaultSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DefaultSound"));
 	DefaultSound->SetupAttachment(GetRootComponent());
+
+	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATargetPoint::StaticClass(), TargetPoints);
+
 }
 
 // Called when the game starts or when spawned

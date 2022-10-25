@@ -11,6 +11,7 @@ ManaRTYour(2),
 ManaRTObject(3),
 ManaRTEnemy(4),
 ManaRTEverything(10),
+XPRegenerationRate(1),
 ManaRegenerationRate(1),
 SpeedStep(200),
 SpeedRun(350)
@@ -72,6 +73,7 @@ void AFPCharacter::BeginPlay()
 	GetCharacterMovementComponent()->MaxWalkSpeed = SpeedStep;
 	CurrentXP = MaxXP;
 	CurrentMana = MaxMana;
+	GetWorld()->GetTimerManager().SetTimer(XPRegenerationTimer, this, &AFPCharacter::XPRegeneration, 3.0f, true);
 	GetWorld()->GetTimerManager().SetTimer(ManaRegenerationTimer, this, &AFPCharacter::ManaRegeneration, 3.0f, true);
 
 }
@@ -112,13 +114,22 @@ void AFPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AFPCharacter::ChangeXP(int value)
 {
-
+	if ((value <= MaxXP) && (value >= 0)) CurrentXP = value;
+	OnXPChanged.Broadcast(CurrentXP);
 }
 
 void AFPCharacter::ChangeMana(int value)
 {
 	if ((value <= MaxMana) && (value >= 0)) CurrentMana = value;
 	OnManaChanged.Broadcast(CurrentMana);
+}
+
+void AFPCharacter::XPRegeneration()
+{
+	if (CurrentXP < MaxXP)
+	{
+		ChangeXP(CurrentXP + XPRegenerationRate);
+	}
 }
 
 void AFPCharacter::ManaRegeneration()

@@ -11,6 +11,7 @@
 #include "FPCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChangedEvent, int, CurrentValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FXPChangedEvent, int, CurrentValue);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversObjectPressed);
 
@@ -41,6 +42,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(BlueprintAssignable)
+	FXPChangedEvent OnXPChanged;
+
+	UPROPERTY(BlueprintAssignable)
 	FManaChangedEvent OnManaChanged;
 
 	UPROPERTY(BlueprintAssignable)
@@ -66,6 +70,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	int MaxMana;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int XPRegenerationRate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	int ManaRegenerationRate;
@@ -131,6 +138,7 @@ private:
 	bool IsVertMove;
 
 	FTimerHandle ManaTimer;
+	FTimerHandle XPRegenerationTimer;
 	FTimerHandle ManaRegenerationTimer;
 	FTimerHandle ManaRTYourTimer;
 	FTimerHandle ManaRTObjectTimer;
@@ -142,5 +150,5 @@ private:
 	void ChangeManaRTObject();
 	void ChangeManaRTYour();
 	void ManaRegeneration();
-
+	void XPRegeneration();
 };

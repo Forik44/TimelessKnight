@@ -47,6 +47,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackDamage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsAttacking;
+
 	UFUNCTION(BlueprintCallable)
 	void LaunchAttack();
 

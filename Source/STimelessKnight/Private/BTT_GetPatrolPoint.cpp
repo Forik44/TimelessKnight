@@ -27,7 +27,8 @@ EBTNodeResult::Type UBTT_GetPatrolPoint::ExecuteTask(UBehaviorTreeComponent& Own
 		{
 			MyBlackboard->SetValueAsInt(FName("CurrentPoint"), ++currentIndex);
 		}
-		else {
+		else 
+		{
 			MyBlackboard->SetValueAsInt(FName("CurrentPoint"), 0);
 		}
 		MyBlackboard->SetValueAsVector(FName("RandomLocation"), Result);

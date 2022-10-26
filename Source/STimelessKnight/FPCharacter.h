@@ -17,6 +17,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversObjectPressed);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversObjectReleased);
 
+
 UCLASS()
 class STIMELESSKNIGHT_API AFPCharacter : public ACharacter
 {
@@ -33,6 +34,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public:
 	// Called every frame

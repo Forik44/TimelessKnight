@@ -78,6 +78,13 @@ void AFPCharacter::BeginPlay()
 
 }
 
+float AFPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	ChangeXP(GetXP() - DamageAmount);
+	return DamageAmount;
+}
+
 void AFPCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -292,7 +299,6 @@ void AFPCharacter::StopCrouch()
 void AFPCharacter::RewindTimeYourStart()
 {
 	GetWorld()->GetTimerManager().SetTimer(ManaRTYourTimer, this, &AFPCharacter::ChangeManaRTYour, 1.0f, true, 0);
-	UE_LOG(LogTemp, Log, TEXT("rewind time on your own"));
 	Camera->PostProcessSettings.VignetteIntensity = 1;
 	Camera->PostProcessSettings.bOverride_VignetteIntensity = true;
 	Camera->PostProcessSettings.GrainIntensity = 0.8;
@@ -301,7 +307,6 @@ void AFPCharacter::RewindTimeYourStart()
 
 void AFPCharacter::RewindTimeYourStop()
 {
-	UE_LOG(LogTemp, Log, TEXT("rewind time on your own"));
 	TimeSystemCharacter->StopRevers();
 	Camera->PostProcessSettings.VignetteIntensity = 0;
 	Camera->PostProcessSettings.bOverride_VignetteIntensity = false;
@@ -312,11 +317,10 @@ void AFPCharacter::RewindTimeYourStop()
 
 void AFPCharacter::RewindTimeObjectStart()
 {
-	UE_LOG(LogTemp, Log, TEXT("rewind time on an object start"));
 	OnReversObjectPressed.Broadcast();
 
 	FHitResult* Hit = new FHitResult();
-	FVector Start = Camera->GetComponentLocation() + UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 50;
+	FVector Start = Camera->GetComponentLocation() + UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 40;
 	FVector End = UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 1000 + Start;
 	GetWorld()->LineTraceSingleByChannel(*Hit, Start, End, ECC_Visibility);
 
@@ -338,7 +342,6 @@ void AFPCharacter::RewindTimeObjectStart()
 }
 void AFPCharacter::RewindTimeObjectStop()
 {
-	UE_LOG(LogTemp, Log, TEXT("rewind time on an object stoped"));
 	OnReversObjectReleased.Broadcast();
 	GetWorld()->GetTimerManager().ClearTimer(ManaRTObjectTimer);
 	if (CatchedObject)
@@ -358,7 +361,6 @@ void AFPCharacter::RewindTimeEverythingStart()
 	if (CurrentMana >= ManaRTEverything)
 	{
 		GetWorld()->GetTimerManager().SetTimer(ManaRTEverythingTimer, this, &AFPCharacter::ChangeManaRTEverything, 1.0f, true, 0);
-		UE_LOG(LogTemp, Log, TEXT("rewind time for everything"));
 	}
 }
 void AFPCharacter::RewindTimeEverythingStop()

@@ -49,11 +49,10 @@ void ADefaultEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 void ADefaultEnemyCharacter::LaunchAttack()
 {
-	UE_LOG(LogTemp, Log, TEXT("Attack"));
 	FHitResult* Hit = new FHitResult();
-	FVector Start = GetActorLocation();
+	FVector Start = GetActorLocation() + UKismetMathLibrary::GetForwardVector(GetActorRotation()) * 40;
 	FVector End = UKismetMathLibrary::GetForwardVector(GetRootComponent()->GetComponentRotation()) * AttackLength + Start;
-	bool Success = GetWorld()->LineTraceSingleByChannel(*Hit, Start, End, ECC_Visibility);
+	bool Success = GetWorld()->LineTraceSingleByChannel(*Hit, Start, End, ECC_Pawn);
 	if (Success)
 	{
 		AActor* ActorHited = Cast<AActor>(Hit->Actor);

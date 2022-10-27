@@ -5,14 +5,14 @@
 
 AFPCharacter::AFPCharacter()
 	:
-MaxXP(100),
-MaxMana(100),
-ManaRTYour(2),
-ManaRTObject(3),
-ManaRTEnemy(4),
-ManaRTEverything(10),
-XPRegenerationRate(1),
-ManaRegenerationRate(1),
+MaxXP(100.f),
+MaxMana(100.f),
+ManaRTYour(2.f),
+ManaRTObject(3.f),
+ManaRTEnemy(4.f),
+ManaRTEverything(10.f),
+XPRegenerationRate(1.f),
+ManaRegenerationRate(1.f),
 SpeedStep(200),
 SpeedRun(350)
 {
@@ -119,15 +119,41 @@ void AFPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("RewindTimeEverything", IE_Released, this, &AFPCharacter::RewindTimeEverythingStop);
 }
 
-void AFPCharacter::ChangeXP(int value)
+void AFPCharacter::ChangeXP(float value)
 {
-	if ((value <= MaxXP) && (value >= 0)) CurrentXP = value;
-	OnXPChanged.Broadcast(CurrentXP);
+	if (value <= 0.f) 
+	{
+		CurrentXP = 0.f;
+		OnDeath.Broadcast();
+	}
+	else
+	{
+		if (value <= MaxXP)
+		{
+			CurrentXP = value;
+		}
+		else if (value > MaxXP)
+		{
+			CurrentXP = MaxXP;
+		}
+		OnXPChanged.Broadcast(CurrentXP);
+	}
 }
 
-void AFPCharacter::ChangeMana(int value)
+void AFPCharacter::ChangeMana(float value)
 {
-	if ((value <= MaxMana) && (value >= 0)) CurrentMana = value;
+	if ((value <= MaxMana) && (value >= 0.f))
+	{
+		CurrentMana = value;
+	}
+	else if (value > MaxMana)
+	{
+		CurrentMana = MaxMana;
+	}
+	else if (value < 0.f)
+	{
+	CurrentMana = 0.f;
+	}
 	OnManaChanged.Broadcast(CurrentMana);
 }
 
@@ -202,17 +228,17 @@ void AFPCharacter::ChangeManaRTEverything()
 }
 
 
-int AFPCharacter::GetXP()
+float AFPCharacter::GetXP()
 {
 	return CurrentXP;
 }
 
-int AFPCharacter::GetMana()
+float AFPCharacter::GetMana()
 {
 	return CurrentMana;
 }
 
-void AFPCharacter::ChangeManaRTOtherObject(FTimerHandle Timer, int ManaRTOtherObject)
+void AFPCharacter::ChangeManaRTOtherObject(FTimerHandle Timer, float ManaRTOtherObject)
 {
 	if (CurrentMana >= ManaRTOtherObject) {
 		ChangeMana(CurrentMana - ManaRTOtherObject);

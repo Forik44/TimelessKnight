@@ -10,8 +10,10 @@
 #include "Public/TimeSystemCharacterComponent.h"
 #include "FPCharacter.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChangedEvent, int, CurrentValue);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FXPChangedEvent, int, CurrentValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChangedEvent,float, CurrentValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FXPChangedEvent, float, CurrentValue);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDeathEvent);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversObjectPressed);
 
@@ -51,6 +53,9 @@ public:
 	FManaChangedEvent OnManaChanged;
 
 	UPROPERTY(BlueprintAssignable)
+	FDeathEvent OnDeath;
+
+	UPROPERTY(BlueprintAssignable)
 	FReversObjectPressed OnReversObjectPressed;
 
 	UPROPERTY(BlueprintAssignable)
@@ -69,43 +74,43 @@ public:
 	float CrouchSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-	int MaxXP;
+	float MaxXP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-	int MaxMana;
+	float MaxMana;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int XPRegenerationRate;
+	float XPRegenerationRate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-	int ManaRegenerationRate;
+	float ManaRegenerationRate;
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
-	void ChangeXP(int value);
+	void ChangeXP(float value);
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
-	void ChangeMana(int value);
+	void ChangeMana(float value);
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
-	int GetXP();
+	float GetXP();
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
-	int GetMana();
+	float GetMana();
 
 	UFUNCTION(BlueprintCallable, Category = "Revers")
-	void ChangeManaRTOtherObject(FTimerHandle Timer, int ManaRTOtherObject);
+	void ChangeManaRTOtherObject(FTimerHandle Timer, float ManaRTOtherObject);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-	int ManaRTEverything;
+	float ManaRTEverything;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-	int ManaRTObject;
+	float ManaRTObject;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-	int ManaRTEnemy;
+	float ManaRTEnemy;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-	int ManaRTYour;
+	float ManaRTYour;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float SpeedStep;
@@ -147,7 +152,7 @@ private:
 	FTimerHandle ManaRTObjectTimer;
 	FTimerHandle ManaRTEverythingTimer;
 
-	int CurrentXP, CurrentMana;
+	float CurrentXP, CurrentMana;
 
 	void ChangeManaRTEverything();
 	void ChangeManaRTObject();

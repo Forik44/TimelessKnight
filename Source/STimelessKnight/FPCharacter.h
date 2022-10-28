@@ -10,10 +10,10 @@
 #include "Public/TimeSystemCharacterComponent.h"
 #include "FPCharacter.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChangedEvent,float, CurrentValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChangedEvent, float, CurrentValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FXPChangedEvent, float, CurrentValue);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDeathEvent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDeathEvent);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversObjectPressed);
 
@@ -79,7 +79,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float MaxMana;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float XPRegenerationRate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
@@ -111,6 +111,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float ManaRTYour;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	float SpeedMana;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	float SpeedRegeneration;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float SpeedStep;

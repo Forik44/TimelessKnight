@@ -35,7 +35,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ATargetPoint*> TargetPoints;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTimeSystemCharacterComponent* TimeSystemCharacter;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

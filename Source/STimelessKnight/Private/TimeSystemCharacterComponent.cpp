@@ -1,4 +1,5 @@
 #include "TimeSystemCharacterComponent.h"
+#include "DefaultEnemyCharacter.h"
 
 UTimeSystemCharacterComponent::UTimeSystemCharacterComponent()
 	:
@@ -19,6 +20,9 @@ void UTimeSystemCharacterComponent::BeginPlay()
 
 	PhysicsBuffer = new TArray<FTransform>;
 	PhysicsBuffer->SetNum(TimeRes);
+
+	IsAttackingBuffer = new TArray<bool>;
+	IsAttackingBuffer->SetNum(TimeRes);
 
 	ActiveElem = 0;
 	CurrentPosition = -1;
@@ -49,12 +53,17 @@ void UTimeSystemCharacterComponent::TickComponent(float DeltaTime, ELevelTick Ti
 
 void UTimeSystemCharacterComponent::StartRevers()
 {
-	this->IsReverse = true;
+	IsReverse = true;
 }
 
 void UTimeSystemCharacterComponent::StopRevers()
 {
-	this->IsReverse = false;
+	IsReverse = false;
+}
+
+bool UTimeSystemCharacterComponent::GetIsReverse()
+{
+	return IsReverse;
 }
 
 void UTimeSystemCharacterComponent::Pop()
@@ -62,6 +71,7 @@ void UTimeSystemCharacterComponent::Pop()
 	if (!Empty()) {
 		FTransform CurrentTransform = TransformBuffer->GetData()[CurrentPosition];
 		FTransform CurrentPhysics = PhysicsBuffer->GetData()[CurrentPosition];
+		bool IsAttacking = IsAttackingBuffer->GetData()[CurrentPosition];
 
 		CurrentPosition = ((CurrentPosition - 1) + TimeRes) % TimeRes;
 		ActiveElem--;
@@ -73,6 +83,11 @@ void UTimeSystemCharacterComponent::Pop()
 			SetPhysicsLinearVelocity(CurrentPhysics.GetLocation());
 		Cast<UCapsuleComponent>(GetOwner()->GetComponentByClass(UCapsuleComponent::StaticClass()))->
 			SetPhysicsAngularVelocity(CurrentPhysics.GetScale3D());
+		ADefaultEnemyCharacter* Enemy = Cast<ADefaultEnemyCharacter>(GetOwner());
+		if (Enemy)
+		{
+			Enemy->IsAttacking = IsAttacking;
+		}
 	}
 	else {
 
@@ -95,10 +110,17 @@ void UTimeSystemCharacterComponent::Push()
 	FTransform CurrentPhysics = FTransform(FRotator(0, 0, 0), LinearVelocity, AngularVelocity);
 	FTransform* PhysicsData = PhysicsBuffer->GetData();
 
+	bool* IsAttackingData = IsAttackingBuffer->GetData();
+
 	CurrentPosition = (++CurrentPosition) % TimeRes;
 	PhysicsData[CurrentPosition] = CurrentPhysics;
 	TransformData[CurrentPosition] = CurrentTransform;
 
+	ADefaultEnemyCharacter* Enemy = Cast<ADefaultEnemyCharacter>(GetOwner());
+	if (Enemy)
+	{
+		IsAttackingData[CurrentPosition] = Enemy->IsAttacking;
+	}
 	if (ActiveElem < TimeRes) {
 		ActiveElem++;
 	}

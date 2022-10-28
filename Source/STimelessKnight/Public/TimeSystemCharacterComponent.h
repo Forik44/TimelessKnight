@@ -31,6 +31,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void StopRevers();
 
+	UFUNCTION(BlueprintCallable)
+		bool GetIsReverse();
+
 	void Pop();
 
 	void Push();
@@ -47,5 +50,5 @@ private:
 
 	TArray<FTransform>* TransformBuffer;
 	TArray<FTransform>* PhysicsBuffer;
-		
+	TArray<bool>* IsAttackingBuffer;
 };

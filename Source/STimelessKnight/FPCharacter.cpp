@@ -14,7 +14,9 @@ ManaRTEverything(10.f),
 XPRegenerationRate(1.f),
 ManaRegenerationRate(1.f),
 SpeedStep(200),
-SpeedRun(350)
+SpeedRun(350),
+SpeedMana(1.f),
+SpeedRegeneration(1.f)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -73,8 +75,8 @@ void AFPCharacter::BeginPlay()
 	GetCharacterMovementComponent()->MaxWalkSpeed = SpeedStep;
 	CurrentXP = MaxXP;
 	CurrentMana = MaxMana;
-	GetWorld()->GetTimerManager().SetTimer(XPRegenerationTimer, this, &AFPCharacter::XPRegeneration, 3.0f, true);
-	GetWorld()->GetTimerManager().SetTimer(ManaRegenerationTimer, this, &AFPCharacter::ManaRegeneration, 3.0f, true);
+	GetWorld()->GetTimerManager().SetTimer(XPRegenerationTimer, this, &AFPCharacter::XPRegeneration, SpeedRegeneration, true);
+	GetWorld()->GetTimerManager().SetTimer(ManaRegenerationTimer, this, &AFPCharacter::ManaRegeneration, SpeedRegeneration, true);
 
 }
 
@@ -124,6 +126,8 @@ void AFPCharacter::ChangeXP(float value)
 	if (value <= 0.f) 
 	{
 		CurrentXP = 0.f;
+		UE_LOG(LogTemp, Log, TEXT("Death"));
+		OnXPChanged.Broadcast(CurrentXP);
 		OnDeath.Broadcast();
 	}
 	else
@@ -324,7 +328,7 @@ void AFPCharacter::StopCrouch()
 
 void AFPCharacter::RewindTimeYourStart()
 {
-	GetWorld()->GetTimerManager().SetTimer(ManaRTYourTimer, this, &AFPCharacter::ChangeManaRTYour, 1.0f, true, 0);
+	GetWorld()->GetTimerManager().SetTimer(ManaRTYourTimer, this, &AFPCharacter::ChangeManaRTYour, SpeedMana, true, 0);
 	Camera->PostProcessSettings.VignetteIntensity = 1;
 	Camera->PostProcessSettings.bOverride_VignetteIntensity = true;
 	Camera->PostProcessSettings.GrainIntensity = 0.8;
@@ -353,7 +357,7 @@ void AFPCharacter::RewindTimeObjectStart()
 	CatchedObject = Cast<AInteractiveItem>(Hit->Actor);
 	if (CatchedObject)
 	{
-		GetWorld()->GetTimerManager().SetTimer(ManaRTObjectTimer, this, &AFPCharacter::ChangeManaRTObject, 1.0f, true, 0);
+		GetWorld()->GetTimerManager().SetTimer(ManaRTObjectTimer, this, &AFPCharacter::ChangeManaRTObject, SpeedMana, true, 0);
 	}
 	else
 	{
@@ -361,8 +365,7 @@ void AFPCharacter::RewindTimeObjectStart()
 		CatchedEnemy = Cast<ADefaultEnemyCharacter>(Hit->Actor);
 		if (CatchedEnemy)
 		{
-			UE_LOG(LogTemp, Log, TEXT("Ob"));
-			GetWorld()->GetTimerManager().SetTimer(ManaRTObjectTimer, this, &AFPCharacter::ChangeManaRTObject, 1.0f, true, 0);
+			GetWorld()->GetTimerManager().SetTimer(ManaRTObjectTimer, this, &AFPCharacter::ChangeManaRTObject, SpeedMana, true, 0);
 		}
 	}
 }
@@ -386,7 +389,7 @@ void AFPCharacter::RewindTimeEverythingStart()
 {
 	if (CurrentMana >= ManaRTEverything)
 	{
-		GetWorld()->GetTimerManager().SetTimer(ManaRTEverythingTimer, this, &AFPCharacter::ChangeManaRTEverything, 1.0f, true, 0);
+		GetWorld()->GetTimerManager().SetTimer(ManaRTEverythingTimer, this, &AFPCharacter::ChangeManaRTEverything, SpeedMana, true, 0);
 	}
 }
 void AFPCharacter::RewindTimeEverythingStop()

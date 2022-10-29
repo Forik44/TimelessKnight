@@ -82,6 +82,7 @@ void AFPCharacter::BeginPlay()
 
 float AFPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	UE_LOG(LogTemp, Log, TEXT("TakeDamage"));
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	ChangeXP(GetXP() - DamageAmount);
 	return DamageAmount;
@@ -123,10 +124,10 @@ void AFPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AFPCharacter::ChangeXP(float value)
 {
+	UE_LOG(LogTemp, Log, TEXT("ChangeXP"));
 	if (value <= 0.f) 
 	{
 		CurrentXP = 0.f;
-		UE_LOG(LogTemp, Log, TEXT("Death"));
 		OnXPChanged.Broadcast(CurrentXP);
 		OnDeath.Broadcast();
 	}

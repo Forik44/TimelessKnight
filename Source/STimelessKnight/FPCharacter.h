@@ -8,6 +8,7 @@
 #include "Public/InteractiveItem.h"
 #include "Public/DefaultEnemyCharacter.h"
 #include "Public/TimeSystemCharacterComponent.h"
+#include "Components/SphereComponent.h"
 #include "FPCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChangedEvent, float, CurrentValue);
@@ -67,6 +68,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "TimeSystem")
 	UTimeSystemCharacterComponent* TimeSystemCharacter;
 
+	UPROPERTY(EditAnywhere, Category = "Collision")
+	USphereComponent* TimeSphereCollision;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	FVector CrouchEyeOffset;
 
@@ -123,10 +127,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float SpeedRun;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	float RadiusOfTimeReverse;
+
 private:
 
 	AInteractiveItem* CatchedObject;
 	ADefaultEnemyCharacter* CatchedEnemy;
+	TArray<AActor*> InteractiveItems;
+	TArray<AActor*> DefaultEnemies;
 
 	void HoriMove(float value);
 	void VertMove(float value);

@@ -16,6 +16,7 @@ ManaRegenerationRate(1.f),
 SpeedStep(200),
 SpeedRun(350),
 SpeedMana(1.f),
+RadiusOfTimeReverse(500.f),
 SpeedRegeneration(1.f)
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -33,6 +34,7 @@ SpeedRegeneration(1.f)
 
 	TimeSystemCharacter = CreateDefaultSubobject<UTimeSystemCharacterComponent>(TEXT("TimeSystemCharacter"));
 
+	TimeSphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("TimeSphere"));
 
 }
 
@@ -78,6 +80,8 @@ void AFPCharacter::BeginPlay()
 	GetWorld()->GetTimerManager().SetTimer(XPRegenerationTimer, this, &AFPCharacter::XPRegeneration, SpeedRegeneration, true);
 	GetWorld()->GetTimerManager().SetTimer(ManaRegenerationTimer, this, &AFPCharacter::ManaRegeneration, SpeedRegeneration, true);
 
+	TimeSphereCollision->AttachTo(RootComponent);
+	TimeSphereCollision->SetSphereRadius(RadiusOfTimeReverse, false);
 }
 
 float AFPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -224,9 +228,32 @@ void AFPCharacter::ChangeManaRTEverything()
 {
 	if (CurrentMana >= ManaRTEverything) {
 		ChangeMana(CurrentMana - ManaRTEverything);
+
+		for (auto Item : InteractiveItems)
+		{
+			Cast<AInteractiveItem>(Item)->TimeSystem->StartRevers();
+		}
+		for (auto Enemy : DefaultEnemies)
+		{
+			Cast<ADefaultEnemyCharacter>(Enemy)->TimeSystemCharacter->StartRevers();
+		}
 	}
 	else
 	{
+		for (auto Item : InteractiveItems)
+		{
+			if (Item)
+			{
+				Cast<AInteractiveItem>(Item)->TimeSystem->StopRevers();
+			}
+		}
+		for (auto Enemy : DefaultEnemies)
+		{
+			if (Enemy)
+			{
+				Cast<ADefaultEnemyCharacter>(Enemy)->TimeSystemCharacter->StopRevers();
+			}
+		}
 		GetWorld()->GetTimerManager().ClearTimer(ManaRTEverythingTimer);
 		RewindTimeEverythingStop();
 	}
@@ -388,12 +415,33 @@ void AFPCharacter::RewindTimeObjectStop()
 
 void AFPCharacter::RewindTimeEverythingStart()
 {
-	if (CurrentMana >= ManaRTEverything)
-	{
+	//OnReversObjectReleased.Broadcast();
+	TimeSphereCollision->GetOverlappingActors(InteractiveItems, AInteractiveItem::StaticClass());
+	TimeSphereCollision->GetOverlappingActors(DefaultEnemies, ADefaultEnemyCharacter::StaticClass());
+
+	if (InteractiveItems.Num() > 0 || DefaultEnemies.Num() > 0) {
 		GetWorld()->GetTimerManager().SetTimer(ManaRTEverythingTimer, this, &AFPCharacter::ChangeManaRTEverything, SpeedMana, true, 0);
 	}
+
 }
 void AFPCharacter::RewindTimeEverythingStop()
 {
-
+	//OnReversObjectReleased.Broadcast();
+	GetWorld()->GetTimerManager().ClearTimer(ManaRTEverythingTimer);
+	for (auto Item : InteractiveItems)
+	{
+		if (Item)
+		{
+			Cast<AInteractiveItem>(Item)->TimeSystem->StopRevers();
+		}
+	}
+	for (auto Enemy : DefaultEnemies)
+	{
+		if (Enemy)
+		{
+			Cast<ADefaultEnemyCharacter>(Enemy)->TimeSystemCharacter->StopRevers();
+		}
+	}
+	InteractiveItems.Empty();
+	DefaultEnemies.Empty();
 }

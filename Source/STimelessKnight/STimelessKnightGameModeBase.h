@@ -7,6 +7,8 @@
 #include "FPCharacter.h"
 #include "STimelessKnightGameModeBase.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndGameEvent);
 /**
  * 
  */
@@ -19,6 +21,9 @@ class STIMELESSKNIGHT_API ASTimelessKnightGameModeBase : public AGameModeBase
 
 	UFUNCTION(BlueprintCallable)
 	void EndGame();
+
+	UPROPERTY(BlueprintAssignable)
+	FEndGameEvent OnEndGame;
 
 	AFPCharacter* Player;
 

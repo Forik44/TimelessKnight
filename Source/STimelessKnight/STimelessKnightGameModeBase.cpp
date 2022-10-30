@@ -14,4 +14,5 @@ void ASTimelessKnightGameModeBase::BeginPlay()
 void ASTimelessKnightGameModeBase::EndGame()
 {
 	Player->Destroy();
+	OnEndGame.Broadcast();
 }

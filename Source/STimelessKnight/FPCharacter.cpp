@@ -79,9 +79,8 @@ void AFPCharacter::BeginPlay()
 	CurrentMana = MaxMana;
 	GetWorld()->GetTimerManager().SetTimer(XPRegenerationTimer, this, &AFPCharacter::XPRegeneration, SpeedRegeneration, true);
 	GetWorld()->GetTimerManager().SetTimer(ManaRegenerationTimer, this, &AFPCharacter::ManaRegeneration, SpeedRegeneration, true);
-
-	TimeSphereCollision->AttachTo(RootComponent);
-	TimeSphereCollision->SetSphereRadius(RadiusOfTimeReverse, false);
+	/*TimeSphereCollision->AttachTo(GetRootComponent());*/
+	/*TimeSphereCollision->SetSphereRadius(RadiusOfTimeReverse, false);*/
 }
 
 float AFPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

@@ -65,10 +65,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* Camera;
 
-	UPROPERTY(EditAnywhere, Category = "TimeSystem")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TimeSystem")
 	UTimeSystemCharacterComponent* TimeSystemCharacter;
 
-	UPROPERTY(EditAnywhere, Category = "Collision")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
 	USphereComponent* TimeSphereCollision;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)

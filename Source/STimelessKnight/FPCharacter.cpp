@@ -34,8 +34,13 @@ SpeedRegeneration(1.f)
 
 	TimeSystemCharacter = CreateDefaultSubobject<UTimeSystemCharacterComponent>(TEXT("TimeSystemCharacter"));
 
-	TimeSphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("TimeSphere"));
-
+	//BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
+	
+	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
+	SphereCollision->AttachTo(RootComponent);
+	
+	//BoxCollision->AttachTo(Camera);
+	//BoxCollision->SetBoxExtent(FVector(RadiusOfTimeReverse, RadiusOfTimeReverse, RadiusOfTimeReverse));
 }
 
 void AFPCharacter::OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
@@ -79,8 +84,8 @@ void AFPCharacter::BeginPlay()
 	CurrentMana = MaxMana;
 	GetWorld()->GetTimerManager().SetTimer(XPRegenerationTimer, this, &AFPCharacter::XPRegeneration, SpeedRegeneration, true);
 	GetWorld()->GetTimerManager().SetTimer(ManaRegenerationTimer, this, &AFPCharacter::ManaRegeneration, SpeedRegeneration, true);
-	/*TimeSphereCollision->AttachTo(GetRootComponent());*/
-	/*TimeSphereCollision->SetSphereRadius(RadiusOfTimeReverse, false);*/
+
+	SphereCollision->SetSphereRadius(RadiusOfTimeReverse);
 }
 
 float AFPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -414,9 +419,15 @@ void AFPCharacter::RewindTimeObjectStop()
 
 void AFPCharacter::RewindTimeEverythingStart()
 {
+	
+	
 	//OnReversObjectReleased.Broadcast();
-	TimeSphereCollision->GetOverlappingActors(InteractiveItems, AInteractiveItem::StaticClass());
-	TimeSphereCollision->GetOverlappingActors(DefaultEnemies, ADefaultEnemyCharacter::StaticClass());
+	//TimeSphereCollision->GetOverlappingActors(InteractiveItems, AInteractiveItem::StaticClass());
+	//TimeSphereCollision->GetOverlappingActors(DefaultEnemies, ADefaultEnemyCharacter::StaticClass());
+
+	SphereCollision->GetOverlappingActors(InteractiveItems, AInteractiveItem::StaticClass());
+	SphereCollision->GetOverlappingActors(DefaultEnemies, ADefaultEnemyCharacter::StaticClass());
+
 
 	if (InteractiveItems.Num() > 0 || DefaultEnemies.Num() > 0) {
 		GetWorld()->GetTimerManager().SetTimer(ManaRTEverythingTimer, this, &AFPCharacter::ChangeManaRTEverything, SpeedMana, true, 0);

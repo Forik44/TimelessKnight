@@ -19,6 +19,9 @@ MaxWalkSpeed(250)
 	DefaultSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DefaultSound"));
 	DefaultSound->SetupAttachment(GetRootComponent());
 
+
+	ParticleSystem = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ParticleSystem"));
+	ParticleSystem->AttachTo(GetMesh());
 	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATargetPoint::StaticClass(), TargetPoints);
 
 }
@@ -31,6 +34,8 @@ void ADefaultEnemyCharacter::BeginPlay()
 	
 	DefaultSound->Stop();
 	/*DefaultSound->Play();*/
+
+	ParticleSystem->SetRelativeLocation(FVector(0, 0, -5), false);
 }
 
 // Called every frame

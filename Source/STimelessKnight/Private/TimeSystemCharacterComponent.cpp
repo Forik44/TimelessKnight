@@ -44,6 +44,10 @@ void UTimeSystemCharacterComponent::BeginPlay()
 	SpeedBuffer = new TArray<float>;
 	SpeedBuffer->SetNum(TimeRes);
 
+	UNiagaraComponent* Particle = Cast<UNiagaraComponent>(GetOwner()->GetComponentByClass(UNiagaraComponent::StaticClass()));
+	if (Particle)
+		Particle->Deactivate();
+
 	ActiveElem = 0;
 	CurrentPosition = -1;
 	IsReverse = false;
@@ -74,11 +78,17 @@ void UTimeSystemCharacterComponent::TickComponent(float DeltaTime, ELevelTick Ti
 void UTimeSystemCharacterComponent::StartRevers()
 {
 	IsReverse = true;
+	UNiagaraComponent* Particle = Cast<UNiagaraComponent>(GetOwner()->GetComponentByClass(UNiagaraComponent::StaticClass()));
+	if (Particle)
+		Particle->Activate();
 }
 
 void UTimeSystemCharacterComponent::StopRevers()
 {
 	IsReverse = false;
+	UNiagaraComponent* Particle = Cast<UNiagaraComponent>(GetOwner()->GetComponentByClass(UNiagaraComponent::StaticClass()));
+	if (Particle)
+		Particle->Deactivate();
 }
 
 bool UTimeSystemCharacterComponent::GetIsReverse()

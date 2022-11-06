@@ -7,6 +7,7 @@
 #include "TimeSystemCharacterComponent.h"
 #include "Components/AudioComponent.h"
 #include "Engine/TargetPoint.h"
+#include "Niagara/Public/NiagaraComponent.h"
 #include "DefaultEnemyCharacter.generated.h"
 
 UCLASS()
@@ -39,6 +40,9 @@ public:
 	UTimeSystemCharacterComponent* TimeSystemCharacter;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UNiagaraComponent* ParticleSystem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAudioComponent* DefaultSound;
 
 	UFUNCTION(BlueprintCallable)
@@ -46,5 +50,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetMaxWalkSpeed();
+
 
 };

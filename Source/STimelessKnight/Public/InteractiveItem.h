@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimeSystemComponent.h"
+#include "Niagara/Public/NiagaraComponent.h"
 #include "InteractiveItem.generated.h"
 
 
@@ -21,6 +22,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTimeSystemComponent* TimeSystem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UNiagaraComponent* ParticleSystem;
+
 
 	AInteractiveItem();
 

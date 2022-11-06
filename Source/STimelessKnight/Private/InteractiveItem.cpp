@@ -9,6 +9,8 @@ AInteractiveItem::AInteractiveItem()
 	PrimaryActorTick.bCanEverTick = true;
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	TimeSystem = CreateDefaultSubobject<UTimeSystemComponent>(TEXT("TimeSystem"));
+	ParticleSystem = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ParticleSystem"));
+	ParticleSystem->AttachTo(RootComponent);
 }
 
 // Called when the game starts or when spawned

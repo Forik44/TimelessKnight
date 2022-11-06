@@ -1,6 +1,7 @@
 
 #include "TimeSystemComponent.h"
-
+#include "InteractiveItem.h"
+#include "NiagaraFunctionLibrary.h"
 
 UTimeSystemComponent::UTimeSystemComponent()
 	:
@@ -25,6 +26,9 @@ void UTimeSystemComponent::BeginPlay()
 	ActiveElem = 0;
 	CurrentPosition = -1;
 	IsReverse = false;
+
+	Cast<UNiagaraComponent>(GetOwner()->GetComponentByClass(UNiagaraComponent::StaticClass()))->
+		Deactivate();
 
 }
 
@@ -64,11 +68,15 @@ void UTimeSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 void UTimeSystemComponent::StartRevers()
 {
 	this->IsReverse = true;
+	Cast<UNiagaraComponent>(GetOwner()->GetComponentByClass(UNiagaraComponent::StaticClass()))->
+		Activate();
 }
 
 void UTimeSystemComponent::StopRevers()
 {
 	this->IsReverse = false;
+	Cast<UNiagaraComponent>(GetOwner()->GetComponentByClass(UNiagaraComponent::StaticClass()))->
+		Deactivate();
 }
 
 void UTimeSystemComponent::Pop()

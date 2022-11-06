@@ -47,16 +47,12 @@ void ADefaultEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 }
 
-void ADefaultEnemyCharacter::LaunchAttack()
+void ADefaultEnemyCharacter::SetMaxWalkSpeed(float value)
 {
-	FHitResult* Hit = new FHitResult();
-	FVector Start = GetActorLocation() + UKismetMathLibrary::GetForwardVector(GetActorRotation()) * 40;
-	FVector End = UKismetMathLibrary::GetForwardVector(GetRootComponent()->GetComponentRotation()) * AttackLength + Start;
-	bool Success = GetWorld()->LineTraceSingleByChannel(*Hit, Start, End, ECC_Pawn);
-	if (Success)
-	{
-		AActor* ActorHited = Cast<AActor>(Hit->Actor);
-		UGameplayStatics::ApplyDamage(ActorHited, AttackDamage, GetController(), this, UDamageType::StaticClass());
-	}
+	GetCharacterMovement()->MaxWalkSpeed = value;
 }
 
+float ADefaultEnemyCharacter::GetMaxWalkSpeed()
+{
+	return GetCharacterMovement()->MaxWalkSpeed;
+}

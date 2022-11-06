@@ -29,7 +29,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float MaxWalkSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -41,18 +41,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAudioComponent* DefaultSound;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float AttackLength;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float AttackDamage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsAttacking;
+	UFUNCTION(BlueprintCallable)
+	void SetMaxWalkSpeed(float value);
 
 	UFUNCTION(BlueprintCallable)
-	void LaunchAttack();
-
-
+	float GetMaxWalkSpeed();
 
 };

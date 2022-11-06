@@ -51,4 +51,10 @@ private:
 	TArray<FTransform>* TransformBuffer;
 	TArray<FTransform>* PhysicsBuffer;
 	TArray<bool>* IsAttackingBuffer;
+	TArray<bool>* IsScreamingBuffer;
+	TArray<bool>* IsRunningBuffer;
+	TArray<bool>* IsCrowlingBuffer;
+	TArray<bool>* IsStayingBuffer;
+	TArray<bool>* IsFallingBuffer;
+	TArray<float>* SpeedBuffer;
 };

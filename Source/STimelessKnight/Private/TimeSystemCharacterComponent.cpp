@@ -1,5 +1,7 @@
 #include "TimeSystemCharacterComponent.h"
 #include "DefaultEnemyCharacter.h"
+#include "SlowEnemyCharacter.h"
+#include "FastEnemyCharacter.h"
 
 UTimeSystemCharacterComponent::UTimeSystemCharacterComponent()
 	:
@@ -23,6 +25,24 @@ void UTimeSystemCharacterComponent::BeginPlay()
 
 	IsAttackingBuffer = new TArray<bool>;
 	IsAttackingBuffer->SetNum(TimeRes);
+
+	IsScreamingBuffer = new TArray<bool>;
+	IsScreamingBuffer->SetNum(TimeRes);
+
+	IsRunningBuffer = new TArray<bool>;
+	IsRunningBuffer->SetNum(TimeRes);
+
+	IsCrowlingBuffer = new TArray<bool>;
+	IsCrowlingBuffer->SetNum(TimeRes);
+
+	IsStayingBuffer = new TArray<bool>;
+	IsStayingBuffer->SetNum(TimeRes);
+
+	IsFallingBuffer = new TArray<bool>;
+	IsFallingBuffer->SetNum(TimeRes);
+
+	SpeedBuffer = new TArray<float>;
+	SpeedBuffer->SetNum(TimeRes);
 
 	ActiveElem = 0;
 	CurrentPosition = -1;
@@ -71,7 +91,6 @@ void UTimeSystemCharacterComponent::Pop()
 	if (!Empty()) {
 		FTransform CurrentTransform = TransformBuffer->GetData()[CurrentPosition];
 		FTransform CurrentPhysics = PhysicsBuffer->GetData()[CurrentPosition];
-		bool IsAttacking = IsAttackingBuffer->GetData()[CurrentPosition];
 
 		CurrentPosition = ((CurrentPosition - 1) + TimeRes) % TimeRes;
 		ActiveElem--;
@@ -83,10 +102,30 @@ void UTimeSystemCharacterComponent::Pop()
 			SetPhysicsLinearVelocity(CurrentPhysics.GetLocation());
 		Cast<UCapsuleComponent>(GetOwner()->GetComponentByClass(UCapsuleComponent::StaticClass()))->
 			SetPhysicsAngularVelocity(CurrentPhysics.GetScale3D());
-		ADefaultEnemyCharacter* Enemy = Cast<ADefaultEnemyCharacter>(GetOwner());
-		if (Enemy)
+		ASlowEnemyCharacter* SlowEnemy = Cast<ASlowEnemyCharacter>(GetOwner());
+		if (SlowEnemy)
 		{
-			Enemy->IsAttacking = IsAttacking;
+			bool IsAttacking = IsAttackingBuffer->GetData()[CurrentPosition];
+			SlowEnemy->IsAttacking = IsAttacking;
+		}
+		AFastEnemyCharacter* FastEnemy = Cast<AFastEnemyCharacter>(GetOwner());
+		if (FastEnemy)
+		{
+			bool IsAttacking = IsAttackingBuffer->GetData()[CurrentPosition];
+			bool IsScreaming = IsScreamingBuffer->GetData()[CurrentPosition];
+			bool IsRunning = IsRunningBuffer->GetData()[CurrentPosition];
+			bool IsCrowling = IsCrowlingBuffer->GetData()[CurrentPosition];
+			bool IsStaying = IsStayingBuffer->GetData()[CurrentPosition];
+			bool IsFalling = IsFallingBuffer->GetData()[CurrentPosition];
+			float Speed = SpeedBuffer->GetData()[CurrentPosition];
+			FastEnemy->SetIsAttacking(IsAttacking);
+			FastEnemy->SetIsScreaming(IsScreaming);
+			FastEnemy->SetIsRunning(IsRunning);
+			FastEnemy->SetIsCrowling(IsCrowling);
+			FastEnemy->SetIsStaying(IsStaying);
+			FastEnemy->SetIsFalling(IsFalling);
+			FastEnemy->SetMaxWalkSpeed(Speed);
+			UE_LOG(LogTemp, Log, TEXT("Speed %d"), Speed);
 		}
 	}
 	else {
@@ -111,17 +150,37 @@ void UTimeSystemCharacterComponent::Push()
 	FTransform* PhysicsData = PhysicsBuffer->GetData();
 
 	bool* IsAttackingData = IsAttackingBuffer->GetData();
-
+	bool* IsScreamingData = IsScreamingBuffer->GetData();
+	bool* IsRunningData = IsRunningBuffer->GetData();
+	bool* IsCrowlingData = IsCrowlingBuffer->GetData();
+	bool* IsStayingData = IsStayingBuffer->GetData();
+	bool* IsFallingData = IsFallingBuffer->GetData();
+	float* SpeedData = SpeedBuffer->GetData();
 	CurrentPosition = (++CurrentPosition) % TimeRes;
 	PhysicsData[CurrentPosition] = CurrentPhysics;
 	TransformData[CurrentPosition] = CurrentTransform;
 
-	ADefaultEnemyCharacter* Enemy = Cast<ADefaultEnemyCharacter>(GetOwner());
-	if (Enemy)
+	ASlowEnemyCharacter* SlowEnemy = Cast<ASlowEnemyCharacter>(GetOwner());
+	if (SlowEnemy)
 	{
-		IsAttackingData[CurrentPosition] = Enemy->IsAttacking;
+		IsAttackingData[CurrentPosition] = SlowEnemy->IsAttacking;
 	}
-	if (ActiveElem < TimeRes) {
+
+	AFastEnemyCharacter* FastEnemy = Cast<AFastEnemyCharacter>(GetOwner());
+	if (FastEnemy)
+	{
+		IsAttackingData[CurrentPosition] = FastEnemy->GetIsAttacking();
+		IsScreamingData[CurrentPosition] = FastEnemy->GetIsScreaming();
+		UE_LOG(LogTemp, Log, TEXT("%d"), FastEnemy->GetIsScreaming());
+		IsRunningData[CurrentPosition] = FastEnemy->GetIsRunning();
+		IsCrowlingData[CurrentPosition] = FastEnemy->GetIsCrowling();
+		IsStayingData[CurrentPosition] = FastEnemy->GetIsStaying();
+		IsFallingData[CurrentPosition] = FastEnemy->GetIsFalling();
+		SpeedData[CurrentPosition] = FastEnemy->GetMaxWalkSpeed();
+	}
+
+	if (ActiveElem < TimeRes) 
+	{
 		ActiveElem++;
 	}
 

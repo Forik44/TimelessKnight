@@ -21,7 +21,7 @@ MaxWalkSpeed(250)
 
 
 	ParticleSystem = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ParticleSystem"));
-	ParticleSystem->AttachTo(GetMesh());
+	ParticleSystem->SetupAttachment(GetRootComponent());
 	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATargetPoint::StaticClass(), TargetPoints);
 
 }
@@ -35,7 +35,7 @@ void ADefaultEnemyCharacter::BeginPlay()
 	DefaultSound->Stop();
 	/*DefaultSound->Play();*/
 
-	ParticleSystem->SetRelativeLocation(FVector(0, 0, -5), false);
+	ParticleSystem->SetRelativeLocation(FVector(0, 0, 20), false);
 }
 
 // Called every frame

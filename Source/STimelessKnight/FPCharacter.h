@@ -6,10 +6,10 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Public/InteractiveItem.h"
+#include "Public/ActiveItem.h"
 #include "Public/DefaultEnemyCharacter.h"
 #include "Public/TimeSystemCharacterComponent.h"
 #include "Components/SphereComponent.h"
-#include "Components/BoxComponent.h"
 #include "FPCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChangedEvent, float, CurrentValue);
@@ -69,14 +69,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TimeSystem")
 	UTimeSystemCharacterComponent* TimeSystemCharacter;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
-	//UBoxComponent* BoxCollision;
-
 	UPROPERTY(EditAnywhere, Category = "TimeSystem")
 	USphereComponent* SphereCollision;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	FVector CrouchEyeOffset;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Default")
+	int CountHelthTube;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Default")
+	int CountManaTube;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	float CrouchSpeed;
@@ -92,6 +95,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float ManaRegenerationRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	float ManaReplenishment;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	float HelthReplenishment;
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	void ChangeXP(float value);
@@ -162,6 +171,11 @@ private:
 	void RewindTimeEverythingStart();
 	void RewindTimeEverythingStop();
 
+	void UseHelthTube();
+	void UseManaTube();
+
+	void TakeItem();
+
 	APawn* GetPlayerPawn() const;
 	UCharacterMovementComponent* GetCharacterMovementComponent() const;
 	bool IsVertMove;
@@ -172,6 +186,7 @@ private:
 	FTimerHandle ManaRTYourTimer;
 	FTimerHandle ManaRTObjectTimer;
 	FTimerHandle ManaRTEverythingTimer;
+
 
 	float CurrentXP, CurrentMana;
 

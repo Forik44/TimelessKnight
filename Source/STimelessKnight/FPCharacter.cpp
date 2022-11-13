@@ -17,7 +17,11 @@ SpeedStep(200),
 SpeedRun(350),
 SpeedMana(1.f),
 RadiusOfTimeReverse(500.f),
-SpeedRegeneration(1.f)
+SpeedRegeneration(1.f),
+CountHelthTube(0),
+CountManaTube(0),
+ManaReplenishment(50.f),
+HelthReplenishment(50.f)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -33,14 +37,10 @@ SpeedRegeneration(1.f)
 	CrouchSpeed = 12.f;
 
 	TimeSystemCharacter = CreateDefaultSubobject<UTimeSystemCharacterComponent>(TEXT("TimeSystemCharacter"));
-
-	//BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
 	
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	SphereCollision->AttachTo(RootComponent);
-	
-	//BoxCollision->AttachTo(Camera);
-	//BoxCollision->SetBoxExtent(FVector(RadiusOfTimeReverse, RadiusOfTimeReverse, RadiusOfTimeReverse));
+
 }
 
 void AFPCharacter::OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
@@ -128,6 +128,11 @@ void AFPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("RewindTimeYour", IE_Released, this, &AFPCharacter::RewindTimeYourStop);
 	PlayerInputComponent->BindAction("RewindTimeObject", IE_Released, this, &AFPCharacter::RewindTimeObjectStop);
 	PlayerInputComponent->BindAction("RewindTimeEverything", IE_Released, this, &AFPCharacter::RewindTimeEverythingStop);
+
+	PlayerInputComponent->BindAction("UseHelthTube", IE_Pressed, this, &AFPCharacter::UseHelthTube);
+	PlayerInputComponent->BindAction("UseManaTube", IE_Pressed, this, &AFPCharacter::UseManaTube);
+
+	PlayerInputComponent->BindAction("Take", IE_Released, this, &AFPCharacter::TakeItem);
 }
 
 void AFPCharacter::ChangeXP(float value)
@@ -268,7 +273,6 @@ float AFPCharacter::GetXP()
 {
 	return CurrentXP;
 }
-
 float AFPCharacter::GetMana()
 {
 	return CurrentMana;
@@ -293,7 +297,6 @@ void AFPCharacter::HoriMove(float value)
 		AddMovementInput(GetActorRightVector(), value);
 	}
 }
-
 void AFPCharacter::VertMove(float value)
 {
 	IsVertMove = value > 0.0f;
@@ -310,7 +313,6 @@ void AFPCharacter::HoriRot(float value)
 		AddActorLocalRotation(FRotator(0, value, 0));
 	}
 }
-
 void AFPCharacter::VertRot(float value)
 {
 	if (value)
@@ -342,7 +344,6 @@ void AFPCharacter::StartRun()
 {
 	if (IsVertMove) GetCharacterMovementComponent()->MaxWalkSpeed = SpeedRun;
 }
-
 void AFPCharacter::StopRun()
 {
 	GetCharacterMovementComponent()->MaxWalkSpeed = SpeedStep;
@@ -352,10 +353,51 @@ void AFPCharacter::StartCrouch()
 {
 	Crouch();
 }
-
 void AFPCharacter::StopCrouch()
 {
 	UnCrouch();
+}
+
+void AFPCharacter::UseHelthTube()
+{
+	if (CountHelthTube) {
+		ChangeXP(GetXP() + HelthReplenishment);
+		CountHelthTube--;
+	}
+}
+void AFPCharacter::UseManaTube()
+{
+	if (CountManaTube) {
+		ChangeMana(GetMana() + HelthReplenishment);
+		CountManaTube--;
+	}
+}
+
+void AFPCharacter::TakeItem()
+{
+	FHitResult* Hit = new FHitResult();
+	FVector Start = Camera->GetComponentLocation() + UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 40;
+	FVector End = UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 1000 + Start;
+	GetWorld()->LineTraceSingleByChannel(*Hit, Start, End, ECC_Visibility);
+
+	AActiveItem* TakingItem = Cast<AActiveItem>(Hit->Actor);
+	if (TakingItem) {
+		switch (TakingItem->ItemID)
+		{
+		case 1:
+			CountHelthTube++;
+			TakingItem->Destroy();
+			break;
+		case 2:
+			CountManaTube++;
+			TakingItem->Destroy();
+			UE_LOG(LogTemp, Log, TEXT("TakeDamage"));
+			break;
+		default:
+			break;
+		}
+	}
+	
 }
 
 void AFPCharacter::RewindTimeYourStart()
@@ -366,7 +408,6 @@ void AFPCharacter::RewindTimeYourStart()
 	Camera->PostProcessSettings.GrainIntensity = 0.8;
 	Camera->PostProcessSettings.bOverride_GrainIntensity = true;
 }
-
 void AFPCharacter::RewindTimeYourStop()
 {
 	TimeSystemCharacter->StopRevers();
@@ -419,12 +460,6 @@ void AFPCharacter::RewindTimeObjectStop()
 
 void AFPCharacter::RewindTimeEverythingStart()
 {
-	
-	
-	//OnReversObjectReleased.Broadcast();
-	//TimeSphereCollision->GetOverlappingActors(InteractiveItems, AInteractiveItem::StaticClass());
-	//TimeSphereCollision->GetOverlappingActors(DefaultEnemies, ADefaultEnemyCharacter::StaticClass());
-
 	SphereCollision->GetOverlappingActors(InteractiveItems, AInteractiveItem::StaticClass());
 	SphereCollision->GetOverlappingActors(DefaultEnemies, ADefaultEnemyCharacter::StaticClass());
 
@@ -436,7 +471,6 @@ void AFPCharacter::RewindTimeEverythingStart()
 }
 void AFPCharacter::RewindTimeEverythingStop()
 {
-	//OnReversObjectReleased.Broadcast();
 	GetWorld()->GetTimerManager().ClearTimer(ManaRTEverythingTimer);
 	for (auto Item : InteractiveItems)
 	{
@@ -455,3 +489,5 @@ void AFPCharacter::RewindTimeEverythingStop()
 	InteractiveItems.Empty();
 	DefaultEnemies.Empty();
 }
+
+

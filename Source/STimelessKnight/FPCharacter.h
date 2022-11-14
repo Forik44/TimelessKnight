@@ -21,6 +21,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversObjectPressed);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversObjectReleased);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTakeItemPressed);
 
 UCLASS()
 class STIMELESSKNIGHT_API AFPCharacter : public ACharacter
@@ -47,6 +48,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(BlueprintAssignable)
+	FTakeItemPressed OnTakeItemPressed;
 
 	UPROPERTY(BlueprintAssignable)
 	FXPChangedEvent OnXPChanged;

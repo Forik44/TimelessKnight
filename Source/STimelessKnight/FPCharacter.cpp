@@ -132,7 +132,7 @@ void AFPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("UseHelthTube", IE_Pressed, this, &AFPCharacter::UseHelthTube);
 	PlayerInputComponent->BindAction("UseManaTube", IE_Pressed, this, &AFPCharacter::UseManaTube);
 
-	PlayerInputComponent->BindAction("Take", IE_Released, this, &AFPCharacter::TakeItem);
+	PlayerInputComponent->BindAction("Take", IE_Pressed, this, &AFPCharacter::TakeItem);
 }
 
 void AFPCharacter::ChangeXP(float value)
@@ -360,6 +360,7 @@ void AFPCharacter::StopCrouch()
 
 void AFPCharacter::UseHelthTube()
 {
+	UE_LOG(LogTemp, Log, TEXT("Use"));
 	if (CountHelthTube) {
 		ChangeXP(GetXP() + HelthReplenishment);
 		CountHelthTube--;
@@ -367,6 +368,7 @@ void AFPCharacter::UseHelthTube()
 }
 void AFPCharacter::UseManaTube()
 {
+	UE_LOG(LogTemp, Log, TEXT("Use"));
 	if (CountManaTube) {
 		ChangeMana(GetMana() + HelthReplenishment);
 		CountManaTube--;
@@ -375,6 +377,8 @@ void AFPCharacter::UseManaTube()
 
 void AFPCharacter::TakeItem()
 {
+	UE_LOG(LogTemp, Log, TEXT("Take"));
+	OnTakeItemPressed.Broadcast();
 	FHitResult* Hit = new FHitResult();
 	FVector Start = Camera->GetComponentLocation() + UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 40;
 	FVector End = UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 1000 + Start;

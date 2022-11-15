@@ -24,7 +24,7 @@ void ARegenerationField::OverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 	AFPCharacter* Character = Cast<AFPCharacter>(OtherActor);
 	
 	if (Character) {
-ö		switch (FieldIndex)
+		switch (FieldIndex)
 		{
 		case 1:
 			DefaultHelthRegenerationRate = Character->XPRegenerationRate;

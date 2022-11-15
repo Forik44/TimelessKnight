@@ -375,6 +375,7 @@ void AFPCharacter::UseManaTube()
 
 void AFPCharacter::TakeItem()
 {
+	OnTakeItemPressed.Broadcast();
 	FHitResult* Hit = new FHitResult();
 	FVector Start = Camera->GetComponentLocation() + UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 40;
 	FVector End = UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 1000 + Start;

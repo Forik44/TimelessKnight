@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-#include "../FPCharacter.h"
 #include "RegenerationField.h"
+#include "../FPCharacter.h"
+
 
 // Sets default values
 ARegenerationField::ARegenerationField()

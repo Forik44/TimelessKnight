@@ -21,6 +21,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversObjectPressed);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversObjectReleased);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTakePressed);
 
 UCLASS()
 class STIMELESSKNIGHT_API AFPCharacter : public ACharacter
@@ -50,6 +51,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FXPChangedEvent OnXPChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FTakePressed OnTakeItemPressed;
 
 	UPROPERTY(BlueprintAssignable)
 	FManaChangedEvent OnManaChanged;

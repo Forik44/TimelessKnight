@@ -6,10 +6,10 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Public/InteractiveItem.h"
-#include "Public/ActiveItem.h"
 #include "Public/DefaultEnemyCharacter.h"
 #include "Public/TimeSystemCharacterComponent.h"
 #include "Components/SphereComponent.h"
+#include "ActiveRegenItem.h"
 #include "FPCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChangedEvent, float, CurrentValue);
@@ -190,7 +190,7 @@ private:
 	FTimerHandle ManaRTYourTimer;
 	FTimerHandle ManaRTObjectTimer;
 	FTimerHandle ManaRTEverythingTimer;
-
+	FTimerHandle RayToSeeTimer;
 
 	float CurrentXP, CurrentMana;
 
@@ -199,4 +199,7 @@ private:
 	void ChangeManaRTYour();
 	void ManaRegeneration();
 	void XPRegeneration();
+
+	void RayToSeeInteractiveItem();
+	AActiveRegenItem* LastItem;
 };

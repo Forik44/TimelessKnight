@@ -181,7 +181,6 @@ void UTimeSystemCharacterComponent::Push()
 	{
 		IsAttackingData[CurrentPosition] = FastEnemy->GetIsAttacking();
 		IsScreamingData[CurrentPosition] = FastEnemy->GetIsScreaming();
-		UE_LOG(LogTemp, Log, TEXT("%d"), FastEnemy->GetIsScreaming());
 		IsRunningData[CurrentPosition] = FastEnemy->GetIsRunning();
 		IsCrowlingData[CurrentPosition] = FastEnemy->GetIsCrowling();
 		IsStayingData[CurrentPosition] = FastEnemy->GetIsStaying();

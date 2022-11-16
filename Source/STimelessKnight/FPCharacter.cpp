@@ -84,6 +84,7 @@ void AFPCharacter::BeginPlay()
 	CurrentMana = MaxMana;
 	GetWorld()->GetTimerManager().SetTimer(XPRegenerationTimer, this, &AFPCharacter::XPRegeneration, SpeedRegeneration, true);
 	GetWorld()->GetTimerManager().SetTimer(ManaRegenerationTimer, this, &AFPCharacter::ManaRegeneration, SpeedRegeneration, true);
+	GetWorld()->GetTimerManager().SetTimer(RayToSeeTimer, this, &AFPCharacter::RayToSeeInteractiveItem, 0.1, true);
 
 	SphereCollision->SetSphereRadius(RadiusOfTimeReverse);
 }
@@ -340,6 +341,35 @@ UCharacterMovementComponent* AFPCharacter::GetCharacterMovementComponent() const
 	return CharacterMovementComponent;
 }
 
+void AFPCharacter::RayToSeeInteractiveItem()
+{
+	FHitResult* Hit = new FHitResult();
+	FVector Start = Camera->GetComponentLocation();
+	FVector End = UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 400 + Start;
+
+	GetWorld()->LineTraceSingleByChannel(*Hit, Start, End, ECC_Visibility);
+
+	AActiveRegenItem* Item = Cast<AActiveRegenItem>(Hit->Actor);
+
+	if (Item != LastItem && LastItem != nullptr)
+	{
+		LastItem->SetCustomDeapth(false);
+	}
+	if (!Item)
+	{
+		LastItem = nullptr;
+		return;
+	}
+	else
+	{
+		if (LastItem != Item)
+		{
+			LastItem = Item;
+			Item->SetCustomDeapth(true);
+		}
+	}
+}
+
 void AFPCharacter::StartRun()
 {
 	if (IsVertMove) GetCharacterMovementComponent()->MaxWalkSpeed = SpeedRun;
@@ -381,7 +411,7 @@ void AFPCharacter::TakeItem()
 	FVector End = UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 1000 + Start;
 	GetWorld()->LineTraceSingleByChannel(*Hit, Start, End, ECC_Visibility);
 
-	AActiveItem* TakingItem = Cast<AActiveItem>(Hit->Actor);
+	AActiveRegenItem* TakingItem = Cast<AActiveRegenItem>(Hit->Actor);
 	if (TakingItem) {
 		switch (TakingItem->ItemID)
 		{

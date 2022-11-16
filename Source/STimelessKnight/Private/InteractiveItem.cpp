@@ -3,6 +3,11 @@
 
 #include "InteractiveItem.h"
 
+void AInteractiveItem::SetCustomDeapth(bool value)
+{
+	Mesh->SetRenderCustomDepth(value);
+}
+
 // Sets default values
 AInteractiveItem::AInteractiveItem()
 {

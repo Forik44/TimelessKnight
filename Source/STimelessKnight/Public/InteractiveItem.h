@@ -26,6 +26,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UNiagaraComponent* ParticleSystem;
 
+	UFUNCTION(BlueprintCallable, Category = "Interactive")
+	void SetCustomDeapth(bool value);
+
 
 	AInteractiveItem();
 

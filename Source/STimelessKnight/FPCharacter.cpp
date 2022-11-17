@@ -390,14 +390,16 @@ void AFPCharacter::StopCrouch()
 
 void AFPCharacter::UseHelthTube()
 {
-	if (CountHelthTube) {
+	if (CountHelthTube) 
+	{
 		ChangeXP(GetXP() + HelthReplenishment);
 		CountHelthTube--;
 	}
 }
 void AFPCharacter::UseManaTube()
 {
-	if (CountManaTube) {
+	if (CountManaTube) 
+	{
 		ChangeMana(GetMana() + HelthReplenishment);
 		CountManaTube--;
 	}

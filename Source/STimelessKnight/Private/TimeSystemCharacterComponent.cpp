@@ -81,6 +81,8 @@ void UTimeSystemCharacterComponent::StartRevers()
 	UNiagaraComponent* Particle = Cast<UNiagaraComponent>(GetOwner()->GetComponentByClass(UNiagaraComponent::StaticClass()));
 	if (Particle)
 		Particle->Activate();
+	AFastEnemyCharacter* FastEnemy = Cast<AFastEnemyCharacter>(GetOwner());
+	
 }
 
 void UTimeSystemCharacterComponent::StopRevers()
@@ -125,6 +127,7 @@ void UTimeSystemCharacterComponent::Pop()
 			bool IsScreaming = IsScreamingBuffer->GetData()[CurrentPosition];
 			bool IsRunning = IsRunningBuffer->GetData()[CurrentPosition];
 			bool IsCrowling = IsCrowlingBuffer->GetData()[CurrentPosition];
+			
 			bool IsStaying = IsStayingBuffer->GetData()[CurrentPosition];
 			bool IsFalling = IsFallingBuffer->GetData()[CurrentPosition];
 			float Speed = SpeedBuffer->GetData()[CurrentPosition];
@@ -163,6 +166,7 @@ void UTimeSystemCharacterComponent::Push()
 	bool* IsScreamingData = IsScreamingBuffer->GetData();
 	bool* IsRunningData = IsRunningBuffer->GetData();
 	bool* IsCrowlingData = IsCrowlingBuffer->GetData();
+
 	bool* IsStayingData = IsStayingBuffer->GetData();
 	bool* IsFallingData = IsFallingBuffer->GetData();
 	float* SpeedData = SpeedBuffer->GetData();
@@ -183,6 +187,7 @@ void UTimeSystemCharacterComponent::Push()
 		IsScreamingData[CurrentPosition] = FastEnemy->GetIsScreaming();
 		IsRunningData[CurrentPosition] = FastEnemy->GetIsRunning();
 		IsCrowlingData[CurrentPosition] = FastEnemy->GetIsCrowling();
+		UE_LOG(LogTemp, Log, TEXT("IS CROWLING %d"), FastEnemy->GetIsCrowling());
 		IsStayingData[CurrentPosition] = FastEnemy->GetIsStaying();
 		IsFallingData[CurrentPosition] = FastEnemy->GetIsFalling();
 		SpeedData[CurrentPosition] = FastEnemy->GetMaxWalkSpeed();

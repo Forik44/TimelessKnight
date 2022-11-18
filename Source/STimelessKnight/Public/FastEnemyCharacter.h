@@ -31,6 +31,9 @@ private:
 	bool IsStaying;
 	bool IsFalling;
 
+	bool ActiveCrawl;
+	bool ActiveRun;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackLength;

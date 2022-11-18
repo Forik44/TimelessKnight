@@ -146,6 +146,9 @@ public:
 	float SpeedRun;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	float SpeedCrouch;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float RadiusOfTimeReverse;
 
 private:

@@ -10,7 +10,7 @@ IsStaying(true),
 AttackLength(150),
 AttackDamage(70)
 {
-
+	
 }
 
 void AFastEnemyCharacter::SetIsAttacking(bool value)
@@ -28,12 +28,63 @@ void AFastEnemyCharacter::SetIsScreaming(bool value)
 void AFastEnemyCharacter::SetIsRunning(bool value)
 {
 	IsRunning = value;
+	if (value)
+	{
+		UE_LOG(LogTemp, Log, TEXT("TRUE Running"));
+		if (!ActiveRun && !ActiveCrawl)
+		{
+			GetCapsuleComponent()->SetCapsuleHalfHeight(32);
+			GetCapsuleComponent()->SetCapsuleRadius(32);
+			GetMesh()->AddRelativeLocation(FVector(-50, 0, 50));
+			ActiveRun = true;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("False Running"));
+		if (ActiveRun)
+		{
+			GetCapsuleComponent()->SetCapsuleHalfHeight(88);
+			GetCapsuleComponent()->SetCapsuleRadius(34);
+			GetMesh()->AddRelativeLocation(FVector(50, 0, -50));
+			ActiveRun = false;
+		}
+	}
 	OnIsRunningChanged.Broadcast(value);
 }
 
 void AFastEnemyCharacter::SetIsCrowling(bool value)
 {
 	IsCrowling = value;
+	if (value)
+	{
+		UE_LOG(LogTemp, Log, TEXT("TRUE Crowling"));
+		if (ActiveRun)
+		{
+			GetCapsuleComponent()->SetCapsuleHalfHeight(88);
+			GetCapsuleComponent()->SetCapsuleRadius(34);
+			GetMesh()->AddRelativeLocation(FVector(50, 0, -50));
+			ActiveRun = false;
+		}
+		if (!ActiveCrawl)
+		{
+			GetCapsuleComponent()->SetCapsuleHalfHeight(32);
+			GetCapsuleComponent()->SetCapsuleRadius(32);
+			GetMesh()->AddRelativeLocation(FVector(-50, 0, 50));
+			ActiveCrawl = true;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("False Crowling"));
+		if(ActiveCrawl)
+		{
+			GetCapsuleComponent()->SetCapsuleHalfHeight(88);
+			GetCapsuleComponent()->SetCapsuleRadius(34);
+			GetMesh()->AddRelativeLocation(FVector(50, 0, -50));
+			ActiveCrawl = false;
+		}
+	}
 	OnIsCrowlingChanged.Broadcast(value);
 }
 

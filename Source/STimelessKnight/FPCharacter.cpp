@@ -21,7 +21,8 @@ SpeedRegeneration(1.f),
 CountHelthTube(0),
 CountManaTube(0),
 ManaReplenishment(50.f),
-HelthReplenishment(50.f)
+HelthReplenishment(50.f),
+SpeedCrouch(150.f)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -381,10 +382,12 @@ void AFPCharacter::StopRun()
 
 void AFPCharacter::StartCrouch()
 {
+	if (IsVertMove) GetCharacterMovementComponent()->MaxWalkSpeed = SpeedCrouch;
 	Crouch();
 }
 void AFPCharacter::StopCrouch()
 {
+	GetCharacterMovementComponent()->MaxWalkSpeed = SpeedStep;
 	UnCrouch();
 }
 
@@ -456,7 +459,7 @@ void AFPCharacter::RewindTimeObjectStart()
 	OnReversObjectPressed.Broadcast();
 
 	FHitResult* Hit = new FHitResult();
-	FVector Start = Camera->GetComponentLocation() + UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 40;
+	FVector Start = Camera->GetComponentLocation() + UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 50;
 	FVector End = UKismetMathLibrary::GetForwardVector(Camera->GetComponentRotation()) * 1000 + Start;
 	GetWorld()->LineTraceSingleByChannel(*Hit, Start, End, ECC_Visibility);
 

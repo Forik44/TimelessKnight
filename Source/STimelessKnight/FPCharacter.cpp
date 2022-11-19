@@ -373,11 +373,16 @@ void AFPCharacter::RayToSeeInteractiveItem()
 
 void AFPCharacter::StartRun()
 {
-	if (IsVertMove) GetCharacterMovementComponent()->MaxWalkSpeed = SpeedRun;
+	if (IsVertMove)
+	{
+		GetCharacterMovementComponent()->MaxWalkSpeed = SpeedRun;
+		OnSprintPressed.Broadcast();
+	}
 }
 void AFPCharacter::StopRun()
 {
 	GetCharacterMovementComponent()->MaxWalkSpeed = SpeedStep;
+	OnSprintReleased.Broadcast();
 }
 
 void AFPCharacter::StartCrouch()
@@ -438,14 +443,17 @@ void AFPCharacter::TakeItem()
 
 void AFPCharacter::RewindTimeYourStart()
 {
+	OnReversSelfPressed.Broadcast();
 	GetWorld()->GetTimerManager().SetTimer(ManaRTYourTimer, this, &AFPCharacter::ChangeManaRTYour, SpeedMana, true, 0);
 	Camera->PostProcessSettings.VignetteIntensity = 1;
 	Camera->PostProcessSettings.bOverride_VignetteIntensity = true;
 	Camera->PostProcessSettings.GrainIntensity = 0.8;
 	Camera->PostProcessSettings.bOverride_GrainIntensity = true;
 }
+
 void AFPCharacter::RewindTimeYourStop()
 {
+	OnReversSelfReleased.Broadcast();
 	TimeSystemCharacter->StopRevers();
 	Camera->PostProcessSettings.VignetteIntensity = 0;
 	Camera->PostProcessSettings.bOverride_VignetteIntensity = false;
@@ -498,15 +506,17 @@ void AFPCharacter::RewindTimeEverythingStart()
 {
 	SphereCollision->GetOverlappingActors(InteractiveItems, AInteractiveItem::StaticClass());
 	SphereCollision->GetOverlappingActors(DefaultEnemies, ADefaultEnemyCharacter::StaticClass());
+	OnReversEvPressed.Broadcast();
 
-
-	if (InteractiveItems.Num() > 0 || DefaultEnemies.Num() > 0) {
+	if (InteractiveItems.Num() > 0 || DefaultEnemies.Num() > 0) 
+	{
 		GetWorld()->GetTimerManager().SetTimer(ManaRTEverythingTimer, this, &AFPCharacter::ChangeManaRTEverything, SpeedMana, true, 0);
 	}
 
 }
 void AFPCharacter::RewindTimeEverythingStop()
 {
+	OnReversEvReleased.Broadcast();
 	GetWorld()->GetTimerManager().ClearTimer(ManaRTEverythingTimer);
 	for (auto Item : InteractiveItems)
 	{

@@ -21,6 +21,18 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversObjectPressed);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversObjectReleased);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversSelfPressed);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversSelfReleased);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversEvPressed);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReversEvReleased);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSprintPressed);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSprintReleased);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTakePressed);
 
 UCLASS()
@@ -66,6 +78,24 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FReversObjectReleased OnReversObjectReleased;
+
+	UPROPERTY(BlueprintAssignable)
+	FReversSelfPressed OnReversSelfPressed;
+
+	UPROPERTY(BlueprintAssignable)
+	FReversSelfReleased OnReversSelfReleased;
+
+	UPROPERTY(BlueprintAssignable)
+	FReversEvPressed OnReversEvPressed;
+
+	UPROPERTY(BlueprintAssignable)
+	FReversEvReleased OnReversEvReleased;
+
+	UPROPERTY(BlueprintAssignable)
+	FSprintPressed OnSprintPressed;
+
+	UPROPERTY(BlueprintAssignable)
+	FSprintReleased OnSprintReleased;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* Camera;

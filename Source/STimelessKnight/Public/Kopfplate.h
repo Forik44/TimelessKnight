@@ -6,9 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Math/Vector.h"
 #include "Kopfplate.generated.h"
 
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlatePress);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlatePress);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlateReleased);
 
 UCLASS()
 class STIMELESSKNIGHT_API AKopfplate : public AActor
@@ -18,14 +20,17 @@ class STIMELESSKNIGHT_API AKopfplate : public AActor
 public:	
 	AKopfplate();
 
-	//UPROPERTY(BlueprintAssignable)
-	//FPlatePress OnPressed;
+	UPROPERTY(BlueprintAssignable)
+	FPlatePress OnKopfplatePressed;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Default")
-	int SpeedPress;
+	UPROPERTY(BlueprintAssignable)
+	FPlateReleased OnKopfplateReleased;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float Stroke;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UStaticMeshComponent* Mesh;
+	UStaticMeshComponent* Plate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBoxComponent* BoxCollision;
@@ -35,6 +40,12 @@ public:
 
 	UFUNCTION()
 	void OverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FVector StartLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FVector ChangedLocation;
 
 protected:
 

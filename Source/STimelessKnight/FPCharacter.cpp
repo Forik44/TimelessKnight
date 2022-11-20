@@ -92,7 +92,7 @@ void AFPCharacter::BeginPlay()
 
 float AFPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	UE_LOG(LogTemp, Log, TEXT("TakeDamage"));
+	OnDamageTook.Broadcast();
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	ChangeXP(GetXP() - DamageAmount);
 	return DamageAmount;
@@ -428,11 +428,12 @@ void AFPCharacter::TakeItem()
 		case 1:
 			CountHelthTube++;
 			TakingItem->Destroy();
+			OnItemTook.Broadcast();
 			break;
 		case 2:
 			CountManaTube++;
 			TakingItem->Destroy();
-			UE_LOG(LogTemp, Log, TEXT("TakeDamage"));
+			OnItemTook.Broadcast();
 			break;
 		default:
 			break;

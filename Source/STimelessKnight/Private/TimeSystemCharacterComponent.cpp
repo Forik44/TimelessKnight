@@ -138,7 +138,6 @@ void UTimeSystemCharacterComponent::Pop()
 			FastEnemy->SetIsStaying(IsStaying);
 			FastEnemy->SetIsFalling(IsFalling);
 			FastEnemy->SetMaxWalkSpeed(Speed);
-			UE_LOG(LogTemp, Log, TEXT("Speed %d"), Speed);
 		}
 	}
 	else {
@@ -187,7 +186,6 @@ void UTimeSystemCharacterComponent::Push()
 		IsScreamingData[CurrentPosition] = FastEnemy->GetIsScreaming();
 		IsRunningData[CurrentPosition] = FastEnemy->GetIsRunning();
 		IsCrowlingData[CurrentPosition] = FastEnemy->GetIsCrowling();
-		UE_LOG(LogTemp, Log, TEXT("IS CROWLING %d"), FastEnemy->GetIsCrowling());
 		IsStayingData[CurrentPosition] = FastEnemy->GetIsStaying();
 		IsFallingData[CurrentPosition] = FastEnemy->GetIsFalling();
 		SpeedData[CurrentPosition] = FastEnemy->GetMaxWalkSpeed();

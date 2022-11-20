@@ -35,6 +35,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSprintReleased);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTakePressed);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDamageTook);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FItemTook);
+
 UCLASS()
 class STIMELESSKNIGHT_API AFPCharacter : public ACharacter
 {
@@ -96,6 +100,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FSprintReleased OnSprintReleased;
+
+	UPROPERTY(BlueprintAssignable)
+	FDamageTook OnDamageTook;
+
+	UPROPERTY(BlueprintAssignable)
+	FItemTook OnItemTook;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* Camera;

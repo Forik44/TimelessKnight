@@ -15,12 +15,13 @@ AInteractiveItem::AInteractiveItem()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	TimeSystem = CreateDefaultSubobject<UTimeSystemComponent>(TEXT("TimeSystem"));
 	ParticleSystem = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ParticleSystem"));
-	ParticleSystem->AttachTo(RootComponent);
+	
 }
 
 // Called when the game starts or when spawned
 void AInteractiveItem::BeginPlay()
 {
+	ParticleSystem->AttachTo(RootComponent);
 	Super::BeginPlay();
 	
 }

@@ -5,7 +5,9 @@
 
 UTimeSystemCharacterComponent::UTimeSystemCharacterComponent()
 	:
-	TimeRes(10000)
+	TimeRes(1000),
+	TimeRememberRate(0.01f),
+	IsReverse(false)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
@@ -50,29 +52,15 @@ void UTimeSystemCharacterComponent::BeginPlay()
 
 	ActiveElem = 0;
 	CurrentPosition = -1;
-	IsReverse = false;
+	
+
 }
 
 
 void UTimeSystemCharacterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (IsReverse)
-	{
-		if (!Empty())
-		{
-			Pop();
-		}
-		else
-		{
-			StopRevers();
-		}
-	}
-	else
-	{
-		Push();
-	}
+	RememberState();
 }
 
 void UTimeSystemCharacterComponent::StartRevers()
@@ -206,5 +194,34 @@ bool UTimeSystemCharacterComponent::Fully()
 bool UTimeSystemCharacterComponent::Empty()
 {
 	return (ActiveElem == 0) ? true : false;
+}
+
+void UTimeSystemCharacterComponent::StartRememberState()
+{
+	GetWorld()->GetTimerManager().SetTimer(RememberTimer, this, &UTimeSystemCharacterComponent::RememberState, TimeRememberRate, true);
+}
+
+void UTimeSystemCharacterComponent::StopRememberState()
+{
+	GetWorld()->GetTimerManager().ClearTimer(RememberTimer);
+}
+
+void UTimeSystemCharacterComponent::RememberState()
+{
+	if (IsReverse)
+	{
+		if (!Empty())
+		{
+			Pop();
+		}
+		else
+		{
+			StopRevers();
+		}
+	}
+	else
+	{
+		Push();
+	}
 }
 

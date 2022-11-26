@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	int TimeRes;
 
+	UPROPERTY(EditAnywhere)
+	float TimeRememberRate;
+
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
@@ -35,6 +38,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StopRevers();
+
 
 	void Pop();
 
@@ -44,6 +48,9 @@ public:
 
 	bool Empty();
 
+	void StartRememberState();
+
+	void StopRememberState();
 	
 
 private:
@@ -60,4 +67,9 @@ private:
 	TArray<FTransform>* PhysicsBuffer;
 
 	FTransform CurrentActorTransform;
+
+	FTimerHandle RememberTimer;
+
+	void RememberState();
+
 };

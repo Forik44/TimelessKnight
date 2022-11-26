@@ -5,7 +5,9 @@
 
 UTimeSystemComponent::UTimeSystemComponent()
 	:
-	TimeRes(10000)
+	TimeRes(1000),
+	TimeRememberRate(0.018f),
+	IsReverse(false)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 }
@@ -36,45 +38,19 @@ void UTimeSystemComponent::BeginPlay()
 void UTimeSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (CurrentActorTransform.IsValid())
-	{
-		if (CurrentActorTransform.GetLocation() != GetOwner()->GetActorTransform().GetLocation() || CurrentActorTransform.GetRotation() != GetOwner()->GetActorTransform().GetRotation() || IsReverse)
-		{
-			CurrentActorTransform = GetOwner()->GetActorTransform();
-			if (IsReverse)
-			{
-				if (!Empty())
-				{
-					Pop();
-				}
-				else
-				{
-					StopRevers();
-				}
-			}
-			else
-			{
-				Push();
-			}
-		}
-	}
-	else
-	{
-		CurrentActorTransform = GetOwner()->GetActorTransform();
-	}
+	RememberState();
 }
 
 void UTimeSystemComponent::StartRevers()
 {
-	this->IsReverse = true;
+	IsReverse = true;
 	Cast<UNiagaraComponent>(GetOwner()->GetComponentByClass(UNiagaraComponent::StaticClass()))->
 		Activate();
 }
 
 void UTimeSystemComponent::StopRevers()
 {
-	this->IsReverse = false;
+	IsReverse = false;
 	Cast<UNiagaraComponent>(GetOwner()->GetComponentByClass(UNiagaraComponent::StaticClass()))->
 		Deactivate();
 }
@@ -133,6 +109,46 @@ bool UTimeSystemComponent::Fully()
 bool UTimeSystemComponent::Empty()
 {
 	return (ActiveElem == 0) ? true : false;
+}
+
+void UTimeSystemComponent::StartRememberState()
+{
+	GetWorld()->GetTimerManager().SetTimer(RememberTimer, this, &UTimeSystemComponent::RememberState, TimeRememberRate, true);
+}
+
+void UTimeSystemComponent::StopRememberState()
+{
+	GetWorld()->GetTimerManager().ClearTimer(RememberTimer);
+}
+
+void UTimeSystemComponent::RememberState()
+{
+	if (CurrentActorTransform.IsValid())
+	{
+		if (CurrentActorTransform.GetLocation() != GetOwner()->GetActorTransform().GetLocation() || CurrentActorTransform.GetRotation() != GetOwner()->GetActorTransform().GetRotation() || IsReverse)
+		{
+			CurrentActorTransform = GetOwner()->GetActorTransform();
+			if (IsReverse)
+			{
+				if (!Empty())
+				{
+					Pop();
+				}
+				else
+				{
+					StopRevers();
+				}
+			}
+			else
+			{
+				Push();
+			}
+		}
+	}
+	else
+	{
+		CurrentActorTransform = GetOwner()->GetActorTransform();
+	}
 }
 
 

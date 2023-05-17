@@ -6,3 +6,5 @@ Developed with Unreal Engine 4
 
 
 [Доска с RoadMap](https://trello.com/b/bqzOGN5M/roadmap-timelessknight)
+
+[Геймплей видео](https://youtu.be/2DWb9VvJGi0)
